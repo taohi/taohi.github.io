@@ -117,7 +117,8 @@
 <meta property="og:description" content="linux下的常见命令">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.taohi.net/2015/01/24/linux-commands/strace-ls.png">
-<meta property="og:updated_time" content="2019-01-30T07:46:49.099Z">
+<meta property="og:image" content="http://www.taohi.net/2015/01/24/linux-commands/pstree-p.png">
+<meta property="og:updated_time" content="2019-01-30T10:01:19.344Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux的常用命令">
 <meta name="twitter:description" content="linux下的常见命令">
@@ -442,7 +443,7 @@
       
 
       
-        <h2 id="压缩与打包tar"><a href="#压缩与打包tar" class="headerlink" title="压缩与打包tar"></a>压缩与打包tar</h2><p>压缩、解压缩：<code>bzip2</code>、 <code>gzip</code>等<br>打包、解包：<code>tar</code> </p>
+        <h1 id="压缩与打解包tar"><a href="#压缩与打解包tar" class="headerlink" title="压缩与打解包tar"></a>压缩与打解包tar</h1><p>压缩、解压缩：<code>bzip2</code>、 <code>gzip</code>等<br>打包、解包：<code>tar</code> </p>
 <ol>
 <li><code>*.gz</code>          gzip压缩的文件</li>
 <li><code>*.bz2</code>         bzip2 压缩的文件</li>
@@ -450,10 +451,14 @@
 <li><code>*.tar.gz</code>      tar程序打包的文件，经过gzip的压缩</li>
 <li><code>*.tar.bz2</code>     tar程序打包的文件，经过bzip2压缩     </li>
 </ol>
-<h3 id="常用解包命令"><a href="#常用解包命令" class="headerlink" title="常用解包命令"></a>常用解包命令</h3><p><strong>tar -zxvf filename.tar.gz</strong><br><strong>tar -jxvf filename.tar.bz2</strong><br>z：表示gzip压缩的文件<br>j：表示bzip2压缩的文件<br>x：表示这是解包操作；c表示是打包操作。<br>v：显示操作的详细过程；<br>f：指定后面的文件名字；<br>如果要解压到指定目录：tar zxvf filename.tar.gz -C  /dir  </p>
-<h3 id="常用打包命令"><a href="#常用打包命令" class="headerlink" title="常用打包命令"></a>常用打包命令</h3><p><strong>tar -zcvf bb.tar.gz aa.txt</strong><br>将aa.txt用gz压缩并打包为bb.tar.gz文件<br><strong>tar -jcvf bb.tar.bz2 aa.txt</strong><br>将aa.txt用gz压缩并打包为bb.tar.bz2文件  </p>
-<h1 id="strace系统调用追踪"><a href="#strace系统调用追踪" class="headerlink" title="strace系统调用追踪"></a>strace系统调用追踪</h1><h2 id="strace-ls"><a href="#strace-ls" class="headerlink" title="strace ls"></a>strace ls</h2><p><img src="linux-commands/strace-ls.png" alt="test"></p>
-<h2 id="strace-p-pid"><a href="#strace-p-pid" class="headerlink" title="strace -p [pid]"></a>strace -p [pid]</h2>
+<h2 id="常用解包命令"><a href="#常用解包命令" class="headerlink" title="常用解包命令"></a>常用解包命令</h2><p><strong>tar -zxvf filename.tar.gz</strong><br><strong>tar -jxvf filename.tar.bz2</strong><br>z：表示gzip压缩的文件<br>j：表示bzip2压缩的文件<br>x：表示这是解包操作；c表示是打包操作。<br>v：显示操作的详细过程；<br>f：指定后面的文件名字；<br>如果要解压到指定目录：tar zxvf filename.tar.gz -C  /dir  </p>
+<h2 id="常用打包命令"><a href="#常用打包命令" class="headerlink" title="常用打包命令"></a>常用打包命令</h2><p><strong>tar -zcvf bb.tar.gz aa.txt</strong><br>将aa.txt用gz压缩并打包为bb.tar.gz文件<br><strong>tar -jcvf bb.tar.bz2 aa.txt</strong><br>将aa.txt用gz压缩并打包为bb.tar.bz2文件  </p>
+<h1 id="系统调用追踪strace"><a href="#系统调用追踪strace" class="headerlink" title="系统调用追踪strace"></a>系统调用追踪strace</h1><h2 id="strace-cmd"><a href="#strace-cmd" class="headerlink" title="strace [cmd]"></a>strace [cmd]</h2><p>查看cmd这个命令产生的系统调用。等号左边是系统调用和参数，右边是系统调用返回值。<br><img src="linux-commands/strace-ls.png" alt="strace查看ls的系统调用"></p>
+<h2 id="strace-p-pid"><a href="#strace-p-pid" class="headerlink" title="strace -p [pid]"></a>strace -p [pid]</h2><p>查看进程pid的系统调用情况。常用于做debug分析。</p>
+<h2 id="strace-–tt-–cp-pid"><a href="#strace-–tt-–cp-pid" class="headerlink" title="strace –tt –cp [pid]"></a>strace –tt –cp [pid]</h2><p>常用作性能分析，统计进程产生的系统调用次数和耗时。 -o参数能够将结果输出到文件。 </p>
+<p>#进程树查看pstree<br>用于查看进程树状图，能直观看出进程之间的调用关系。</p>
+<h2 id="pstree-pid-p"><a href="#pstree-pid-p" class="headerlink" title="pstree [pid] -p"></a>pstree [pid] -p</h2><p><img src="linux-commands/pstree-p.png" alt=""></p>
+
       
     </div>
 
@@ -770,7 +775,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#压缩与打包tar"><span class="nav-text">压缩与打包tar</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用解包命令"><span class="nav-text">常用解包命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用打包命令"><span class="nav-text">常用打包命令</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#strace系统调用追踪"><span class="nav-text">strace系统调用追踪</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#strace-ls"><span class="nav-text">strace ls</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#strace-p-pid"><span class="nav-text">strace -p [pid]</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#压缩与打解包tar"><span class="nav-text">压缩与打解包tar</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常用解包命令"><span class="nav-text">常用解包命令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常用打包命令"><span class="nav-text">常用打包命令</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#系统调用追踪strace"><span class="nav-text">系统调用追踪strace</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#strace-cmd"><span class="nav-text">strace [cmd]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#strace-p-pid"><span class="nav-text">strace -p [pid]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#strace-–tt-–cp-pid"><span class="nav-text">strace –tt –cp [pid]</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#pstree-pid-p"><span class="nav-text">pstree [pid] -p</span></a></li></ol></li></ol></div>
             
 
           </div>
