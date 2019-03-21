@@ -118,9 +118,8 @@
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.taohi.net/2014/07/12/c-in-disassemble-level/asm_all.jpg">
 <meta property="og:image" content="http://www.taohi.net/2014/07/12/c-in-disassemble-level/main_asm.jpg">
-<meta property="og:image" content="http://www.taohi.net/2014/07/12/foo_asm.jpg">
 <meta property="og:image" content="http://www.taohi.net/2014/07/12/c-in-disassemble-level/foo_asm.jpg">
-<meta property="og:updated_time" content="2018-07-15T00:35:25.000Z">
+<meta property="og:updated_time" content="2019-03-21T05:56:51.755Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C程序的汇编级别运行过程">
 <meta name="twitter:description" content="文章介绍C语言在汇编级别的运行过程。帮助理解C函数的调用出栈入栈过程，以及理解递归不收敛时程序崩溃现象。">
@@ -450,7 +449,7 @@
 <h2 id="C代码"><a href="#C代码" class="headerlink" title="C代码"></a>C代码</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">foo</span><span class="params">(<span class="keyword">int</span> a,<span class="keyword">int</span> b)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">int</span> c=a+b;</span><br><span class="line">    <span class="keyword">return</span> c;</span><br><span class="line">&#125;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    foo(<span class="number">2</span>,<span class="number">3</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="汇编代码"><a href="#汇编代码" class="headerlink" title="汇编代码"></a>汇编代码</h2><img src="/2014/07/12/c-in-disassemble-level/asm_all.jpg" title="汇编代码">
 <h2 id="main函数c与汇编对照"><a href="#main函数c与汇编对照" class="headerlink" title="main函数c与汇编对照"></a>main函数c与汇编对照</h2><img src="/2014/07/12/c-in-disassemble-level/main_asm.jpg" title="main函数C与汇编代码">
-<h2 id="foo函数C与汇编对照"><a href="#foo函数C与汇编对照" class="headerlink" title="foo函数C与汇编对照"></a>foo函数C与汇编对照</h2><p><img src="foo_asm.jpg" alt="foo函数C与汇编代码"><br><img src="/2014/07/12/c-in-disassemble-level/foo_asm.jpg" title="foo函数C与汇编代码"> </p>
+<h2 id="foo函数C与汇编对照"><a href="#foo函数C与汇编对照" class="headerlink" title="foo函数C与汇编对照"></a>foo函数C与汇编对照</h2><p><img src="c-in-disassemble-level/foo_asm.jpg" alt="foo函数C与汇编代码"></p>
 <h2 id="汇编相关知识"><a href="#汇编相关知识" class="headerlink" title="汇编相关知识"></a>汇编相关知识</h2><ul>
 <li><code>eip寄存器</code>：始终存放下一条要执行的指令地址；</li>
 <li><code>ebp寄存器</code>：存放当前栈基址(栈底)；</li>
