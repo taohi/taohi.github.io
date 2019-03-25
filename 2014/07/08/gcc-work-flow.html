@@ -117,7 +117,7 @@
 <meta property="og:description" content="本篇文章介绍了在Linux环境下，gcc编译器将一个c文件，经过4个步骤，逐步编译成为可执行文件的详细过程。">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://www.taohi.net/2014/07/08/gcc-work-flow/gcc_compile_flow.jpg">
-<meta property="og:updated_time" content="2019-03-22T01:47:50.136Z">
+<meta property="og:updated_time" content="2019-03-25T06:49:27.105Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Linux下gcc的编译流程">
 <meta name="twitter:description" content="本篇文章介绍了在Linux环境下，gcc编译器将一个c文件，经过4个步骤，逐步编译成为可执行文件的详细过程。">
@@ -453,7 +453,7 @@
 <p>汇编语言是非常有用的，因为它给不同高级语言的不同编译器提供了通用的输出语言。例如，C和Fortran 的在此步编译产生的输出文件都是一样的汇编语言。</p>
 <h3 id="第三步：汇编阶段"><a href="#第三步：汇编阶段" class="headerlink" title="第三步：汇编阶段"></a>第三步：汇编阶段</h3><p>执行命令: <code>gcc -o hello.o -c hello.s</code><br>或者执行： <code>as -o hello.o hello.s</code><br>汇编器as 将hello.s 翻译成机器语言保存在hello.o 中。这是个二进制文件</p>
 <h3 id="第四步：链接阶段"><a href="#第四步：链接阶段" class="headerlink" title="第四步：链接阶段"></a>第四步：链接阶段</h3><p>执行命令: <code>gcc -o hello hello.o</code><br>或者执行： <code>ld -o hello hello.o</code><br>注意：hello程序调用了<code>printf</code> 函数，这个函数是标准C库中的一个函数，他保存在一个名为<code>printf.o</code> 的文件中，这个文件必须以某种方式合并到我们的<code>hello.o</code>的程序中。链接器ld 负责处理这种合并。结果得到hello 可执行文件，可以被加载到内存中由系统执行。</p>
-<h4 id="链接时库文件顺序"><a href="#链接时库文件顺序" class="headerlink" title="链接时库文件顺序"></a>链接时库文件顺序</h4><p>gcc先找-L设置的路径<br>再找环境变量LIBRATY_PATH设置的路径<br>最后再依次找系统目录 /lib  /usr/lib  /usr/local/lib </p>
+<h4 id="链接时库文件顺序"><a href="#链接时库文件顺序" class="headerlink" title="链接时库文件顺序"></a>链接时库文件顺序</h4><p>gcc先找-L设置的路径<br>再找环境变量LIBRATY_PATH设置的路径<br>最后再依次找系统目录 /lib  /usr/lib  /usr/local/lib<br>当有同名的静态库和动态库，动态库优先级更高。 </p>
 <h3 id="第五步：执行程序"><a href="#第五步：执行程序" class="headerlink" title="第五步：执行程序"></a>第五步：执行程序</h3><p>如果程序链接了动态库，则运行时动态库的搜索顺序<br>编译程序时直接指定动态库<br>找环境变量LD_LIBRARY_PATH设置的路径<br>找内定目录 /lib  /usr/lib /usr/local/lib</p>
 <h2 id="最后总结"><a href="#最后总结" class="headerlink" title="最后总结"></a>最后总结</h2><p>编译器的编译过程:<br>源文件–&gt;预处理–&gt;编译/优化–&gt;汇编–&gt;链接–&gt;可执行文件-&gt;加载执行。</p>
 
