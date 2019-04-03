@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>http://www.taohi.net/2019/03/27/makefile.html</loc>
+    
+    <lastmod>2019-03-27T05:36:28.685Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/08/gcc-work-flow.html</loc>
+    
+    <lastmod>2019-03-25T06:49:27.105Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/12/c-in-disassemble-level.html</loc>
+    
+    <lastmod>2019-03-21T05:56:51.755Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2018/12/27/dizangjing.html</loc>
+    
+    <lastmod>2019-03-13T02:41:46.775Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2019/03/07/performance-analysis.html</loc>
+    
+    <lastmod>2019-03-08T09:04:26.675Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/01/24/linux-commands.html</loc>
+    
+    <lastmod>2019-03-07T08:10:57.177Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2019/02/19/java-basics.html</loc>
+    
+    <lastmod>2019-02-21T11:35:22.342Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2019/02/19/python-basic.html</loc>
+    
+    <lastmod>2019-02-19T07:16:21.798Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/10/git-usage-notes.html</loc>
+    
+    <lastmod>2019-02-19T03:48:09.233Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/01/21/c-byte-align.html</loc>
+    
+    <lastmod>2019-01-30T01:28:10.271Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/03/ipc-pipe.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/08/interview-questions.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/04/17/graduation-note.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/12/c-input-output.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/03/ipc-fifo.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/11/ipc-msg-semaphore.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2018/01/01/annual-review-2017.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/03/ipc-signal.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/11/ipc-share-memory.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/02/kernel-container-of.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/14/c-pointer-complex-declaration.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/13/c-sizeof.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/02/linux-address-mapping.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/10/linux-c-memory-layout.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/12/linux-kernel-timer.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/03/linux-ipc.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/01/26/linux-module-param.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/01/22/c-typedef-define.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/13/c-const-static.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/01/23/c-flexible-array.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/08/gdb-debug-md.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/12/malloc-sbrk.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/11/linux-multi-thread.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2014/07/08/sort-code-in-c.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2017/02/27/tuoyouping.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2018/01/17/youarenotlate.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/12/21/yuwei2.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/08/11/win10-shortcut.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/02/12/linux-vfs.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/2015/01/20/array-name-and-pointer.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/about/index.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/categories/index.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://www.taohi.net/tags/index.html</loc>
+    
+    <lastmod>2018-07-15T00:35:25.000Z</lastmod>
+    
+  </url>
+  
+</urlset>
