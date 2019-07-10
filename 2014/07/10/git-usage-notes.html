@@ -116,12 +116,12 @@
 <meta property="og:site_name" content="taohi Notes">
 <meta property="og:description" content="记录git的常用操作,以及常用到的git的基本原理。">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://www.taohi.net/2014/07/10/git-usage-notes/git_usage.png">
-<meta property="og:updated_time" content="2019-07-08T06:25:28.068Z">
+<meta property="og:image" content="http://www.taohi.net/2014/07/10/git-usage-notes/git.png">
+<meta property="og:updated_time" content="2019-07-10T03:15:26.117Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git使用笔记">
 <meta name="twitter:description" content="记录git的常用操作,以及常用到的git的基本原理。">
-<meta name="twitter:image" content="http://www.taohi.net/2014/07/10/git-usage-notes/git_usage.png">
+<meta name="twitter:image" content="http://www.taohi.net/2014/07/10/git-usage-notes/git.png">
 
 
 
@@ -452,13 +452,22 @@
       
         <p>git用来做代码版本管理非常合适和高效。</p>
 <h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><p>在ubuntu下获得git非常容易：<br><code>sudo apt-get install git</code></p>
-<h2 id="git提交到远程池"><a href="#git提交到远程池" class="headerlink" title="git提交到远程池"></a>git提交到远程池</h2><p><img src="git-usage-notes/git_usage.png" alt="git基本原理"><br>一次典型的过程，以在<code>github</code>建远程仓库为例，事先去github建立一个名字为test的repository之后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name taohi            //第一次使用git时设置</span><br><span class="line">git config --global user.email taohi@taohi.net //第一次时设置</span><br><span class="line">mkdir test &amp;&amp; cd test                                </span><br><span class="line">git init                                       //本地仓库初始化</span><br><span class="line">vim hello.c                                              </span><br><span class="line">git add hello.c                                //加入到staging area</span><br><span class="line">git commit -m &quot;first file hello world&quot;         //提交到本地repository</span><br><span class="line">git remote add origin git@github.com:taohi/test.git//设置origin别名</span><br><span class="line">git push -u origin master                            //提交到远程repository</span><br></pre></td></tr></table></figure></p>
+<h2 id="git的几个概念"><a href="#git的几个概念" class="headerlink" title="git的几个概念"></a>git的几个概念</h2><p><img src="git-usage-notes/git.png" alt="git基本原理"><br><code>Workspace</code>:工作区。编写代码的位置。<br><code>Index(Staging Area)</code>:暂存区。使用add命令,将代码加入这个区。<br><code>Local Repository</code>:本地仓库。执行commit,从暂存区提交到本地仓库。<br><code>Remote Repository</code>:远程仓库。使用push从本地仓库推送到服务器远程仓库。</p>
+<h2 id="git提交到远程池"><a href="#git提交到远程池" class="headerlink" title="git提交到远程池"></a>git提交到远程池</h2><p>一次典型的过程，以在<code>github</code>建远程仓库为例，事先去github建立一个名字为test的repository之后：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name taohi            //第一次使用git时设置</span><br><span class="line">git config --global user.email taohi@taohi.net //第一次时设置</span><br><span class="line">mkdir test &amp;&amp; cd test                                </span><br><span class="line">git init                                       //本地仓库初始化</span><br><span class="line">vim hello.c                                              </span><br><span class="line">git add hello.c                                //加入到staging area</span><br><span class="line">git commit -m &quot;first file hello world&quot;         //提交到本地repository</span><br><span class="line">git remote add origin git@github.com:taohi/test.git//设置origin别名</span><br><span class="line">git push -u origin master                            //提交到远程repository</span><br></pre></td></tr></table></figure></p>
 <p>当然，要事先在github上设置好本地电脑生成的<code>ssh public key</code>,允许本地电脑的权限。</p>
 <h2 id="git做一次merge管理"><a href="#git做一次merge管理" class="headerlink" title="git做一次merge管理"></a>git做一次merge管理</h2><p>git一般是一组人一起使用，在各自的本地repo与远程repo之间更新代码。在一定阶段后，比如说组内阶段1任务完成，此时需要将各自的分支下代码整合到master分支里。<br>以我自己分支taohi为例，将其merge到远程master，过程如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">git checkout master  //进入本地master分支</span><br><span class="line">git merge taohi      //把我的分支merge到master分支</span><br><span class="line">git checkout -t origin/xiaoming //取远程xiaoming的分支到我本地</span><br><span class="line">git pull</span><br><span class="line">git checkout master</span><br><span class="line">git merge xiaoming  //把小明的分支merge到master下</span><br><span class="line">                    //如果还有其他人的分支，按上述方法都进行合并</span><br><span class="line">git push origin master //把本地最后合并好的master更新到远程池</span><br><span class="line">git tag topic1</span><br><span class="line">git push origin --tags</span><br><span class="line">结束。</span><br></pre></td></tr></table></figure></p>
 <h2 id="git撤销一次merge合并"><a href="#git撤销一次merge合并" class="headerlink" title="git撤销一次merge合并"></a>git撤销一次merge合并</h2><p>我在master下手贱，merge了一个分支。马上想撤销这次merge。<br>先git log 查看要撤销的这个merge操作的commit 编号，假设是fb10e4694ccc21321。执行：<br><code>git reset --hard fb10e4694ccc21321</code>。</p>
-<h2 id="git更换远程库地址"><a href="#git更换远程库地址" class="headerlink" title="git更换远程库地址"></a>git更换远程库地址</h2><p>比如之前用的github的库，地址为url-github<br>现在用bitbucket的库，地址为url-bitbucket.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git remote rm origin</span><br><span class="line">git remote add origin url-bitbucket</span><br><span class="line">git push origin master</span><br><span class="line">```    </span><br><span class="line"></span><br><span class="line">## git的其他常用命令</span><br></pre></td></tr></table></figure></p>
-<p>git ls-remote　　 查看远程所有的分支<br>git remote -v　　 查看git远程详细地址<br>git reset HEAD ^ 回滚到上一个提交点。注意上尖号<br>git branch (branch_name) 查看(创建)分支<br>git checkout branch_name 进入某分支<br><code>`</code></p>
-
+<h2 id="git更换远程库地址"><a href="#git更换远程库地址" class="headerlink" title="git更换远程库地址"></a>git更换远程库地址</h2><p>比如之前用的github的库，地址为url-github<br>现在用bitbucket的库，地址为url-bitbucket.  </p>
+<pre><code>git remote rm origin
+git remote add origin url-bitbucket
+git push origin master
+</code></pre><h2 id="git的其他常用命令"><a href="#git的其他常用命令" class="headerlink" title="git的其他常用命令"></a>git的其他常用命令</h2><pre><code>git ls-remote　　 查看远程所有的分支
+git remote -v　　 查看git远程详细地址
+git branch -vv   查看本地分支跟踪的远程分支对应关系
+git reset HEAD ^ 回滚到上一个提交点。注意上尖号
+git branch (branch_name) 查看(创建)分支
+git checkout branch_name 进入某分支
+</code></pre>
       
     </div>
 
@@ -791,7 +800,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装git"><span class="nav-text">安装git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git提交到远程池"><span class="nav-text">git提交到远程池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git做一次merge管理"><span class="nav-text">git做一次merge管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git撤销一次merge合并"><span class="nav-text">git撤销一次merge合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git更换远程库地址"><span class="nav-text">git更换远程库地址</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#安装git"><span class="nav-text">安装git</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git的几个概念"><span class="nav-text">git的几个概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git提交到远程池"><span class="nav-text">git提交到远程池</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git做一次merge管理"><span class="nav-text">git做一次merge管理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git撤销一次merge合并"><span class="nav-text">git撤销一次merge合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git更换远程库地址"><span class="nav-text">git更换远程库地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git的其他常用命令"><span class="nav-text">git的其他常用命令</span></a></li></ol></div>
             
 
           </div>

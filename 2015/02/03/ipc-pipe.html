@@ -109,7 +109,7 @@
 
 
   <meta name="description" content="基本概念无名管道是一种特殊类型文件。内核资源对应一段特殊内存。管道的数据流是单向的。   命令ulimit -p 查看管道最大值限制，默认为8*512Byte=4KB。由limit.h的宏PIPE_BUF定义。   头文件：#include &amp;lt;unistd.h&amp;gt;   原型：int pipe(int pipefd[2]); 若执行成功，pipefd内将存储两个文件描述符，指向管道的两端(">
-<meta name="keywords" content="进程间通信,ipc,pipe">
+<meta name="keywords" content="ipc,进程间通信,pipe">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Linux进程间通信之一：无名管道PIPE">
 <meta property="og:url" content="http://www.taohi.net/2015/02/03/ipc-pipe.html">
@@ -479,9 +479,9 @@
       
         <div class="post-tags">
           
-            <a href="/tags/进程间通信/" rel="tag"># 进程间通信</a>
-          
             <a href="/tags/ipc/" rel="tag"># ipc</a>
+          
+            <a href="/tags/进程间通信/" rel="tag"># 进程间通信</a>
           
             <a href="/tags/pipe/" rel="tag"># pipe</a>
           
