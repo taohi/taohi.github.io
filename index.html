@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next gemini use-motion" lang="zh-CN">
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -84,7 +84,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Gemini',
+    scheme: 'Muse',
     version: '6.3.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: false,
@@ -282,6 +282,9 @@
   
 
   
+    
+
+  
 
   
     <div class="site-search">
@@ -324,9 +327,6 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          
-            
-
           
           <div id="content" class="content">
             
@@ -443,17 +443,107 @@
       
         
           
-          一、Make的概念Make这个词，英语的意思是”制作”。Make命令直接用了这个意思，就是要做出某个文件。比如，要做出文件a.txt，就可以执行下面的命令。
-1$ make a.txt
-但是，如果你真的输入这条命令，它并不会起作用。因为Make命令本身并不知道，如何做出a.txt，需要有人告诉它，如
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/03/27/makefile.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h1 id="一、Make的概念"><a href="#一、Make的概念" class="headerlink" title="一、Make的概念"></a>一、Make的概念</h1><p>Make这个词，英语的意思是”制作”。Make命令直接用了这个意思，就是要做出某个文件。比如，要做出文件a.txt，就可以执行下面的命令。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ make a.txt</span><br></pre></td></tr></table></figure>
+<p>但是，如果你真的输入这条命令，它并不会起作用。因为Make命令本身并不知道，如何做出a.txt，需要有人告诉它，如何调用其他命令完成这个目标。</p>
+<p>比如，假设文件 a.txt 依赖于 b.txt 和 c.txt ，是后面两个文件连接cat命令的产物。那么，make 需要知道下面的规则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.txt: b.txt c.txt</span><br><span class="line">    cat b.txt c.txt &gt; a.txt</span><br></pre></td></tr></table></figure></p>
+<p>也就是说，make a.txt 这条命令的背后，实际上分成两步：第一步，确认 b.txt 和 c.txt 必须已经存在，第二步使用 cat 命令 将这个两个文件合并，输出为新文件。</p>
+<p>像这样的规则，都写在一个叫做Makefile的文件中，Make命令依赖这个文件进行构建。Makefile文件也可以写为makefile， 或者用命令行参数指定为其他文件名。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ make -f rules.txt</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line">$ make --file=rules.txt</span><br></pre></td></tr></table></figure></p>
+<p>上面代码指定make命令依据rules.txt文件中的规则，进行构建。 </p>
+<p>总之，make只是一个根据指定的Shell命令进行构建的工具。它的规则很简单，你规定要构建哪个文件、它依赖哪些源文件，当那些文件有变动时，如何重新构建它。</p>
+<h1 id="二、Makefile文件的格式"><a href="#二、Makefile文件的格式" class="headerlink" title="二、Makefile文件的格式"></a>二、Makefile文件的格式</h1><p>构建规则都写在Makefile文件里面，要学会如何Make命令，就必须学会如何编写Makefile文件。</p>
+<h2 id="2-1-概述"><a href="#2-1-概述" class="headerlink" title="2.1 概述"></a>2.1 概述</h2><p>Makefile文件由一系列规则rules构成。每条规则的形式如下。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;target&gt; : &lt;prerequisites&gt; </span><br><span class="line">[tab]  &lt;commands&gt;</span><br></pre></td></tr></table></figure></p>
+<p>上面第一行冒号前面的部分，叫做”目标”target，冒号后面的部分叫做”前置条件”prerequisites；第二行必须由一个tab键起首，后面跟着”命令”commands。</p>
+<p>“目标”是必需的，不可省略；”前置条件”和”命令”都是可选的，但是两者之中必须至少存在一个。</p>
+<p>每条规则就明确两件事：构建目标的前置条件是什么，以及如何构建。下面就详细讲解，每条规则的这三个组成部分。</p>
+<h2 id="2-2-目标target"><a href="#2-2-目标target" class="headerlink" title="2.2 目标target"></a>2.2 目标target</h2><p>一个目标target就构成一条规则。目标通常是文件名，指明Make命令所要构建的对象，比如上文的 a.txt 。目标可以是一个文件名，也可以是多个文件名，之间用空格分隔。</p>
+<p>除了文件名，目标还可以是某个操作的名字，这称为”伪目标”phony target。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">clean:</span><br><span class="line">      rm *.o</span><br></pre></td></tr></table></figure>
+<p>上面代码的目标是clean，它不是文件名，而是一个操作的名字，属于”伪目标”，作用是删除对象文件。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ make  clean</span><br></pre></td></tr></table></figure>
+<p>但是，如果当前目录中，正好有一个文件叫做clean，那么这个命令不会执行。因为Make发现clean文件已经存在，就认为没有必要重新构建了，就不会执行指定的rm命令。</p>
+<p>为了避免这种情况，可以明确声明clean是”伪目标”，写法如下。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.PHONY: clean</span><br><span class="line">clean:</span><br><span class="line">        rm *.o temp</span><br></pre></td></tr></table></figure>
+<p>声明clean是”伪目标”之后，make就不会去检查是否存在一个叫做clean的文件，而是每次运行都执行对应的命令。像.PHONY这样的内置目标名还有不少，可以查看手册。</p>
+<p>如果Make命令运行时没有指定目标，默认会执行Makefile文件的第一个目标。</p>
+<p>$ make<br>上面代码执行Makefile文件的第一个目标。</p>
+<h2 id="2-3-前置条件prerequisites"><a href="#2-3-前置条件prerequisites" class="headerlink" title="2.3 前置条件prerequisites"></a>2.3 前置条件prerequisites</h2><p>前置条件通常是一组文件名，之间用空格分隔。它指定了”目标”是否重新构建的判断标准：只要有一个前置文件不存在，或者有过更新前置文件的last-modification时间戳比目标的时间戳新，”目标”就需要重新构建。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">result.txt: source.txt</span><br><span class="line">    cp source.txt result.txt</span><br></pre></td></tr></table></figure></p>
+<p>上面代码中，构建 result.txt 的前置条件是 source.txt 。如果当前目录中，source.txt 已经存在，那么make result.txt可以正常运行，否则必须再写一条规则，来生成 source.txt 。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">source.txt:</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"this is the source"</span> &gt; source.txt</span><br></pre></td></tr></table></figure>
+<p>上面代码中，source.txt后面没有前置条件，就意味着它跟其他文件都无关，只要这个文件还不存在，每次调用make source.txt，它都会生成。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ make result.txt</span><br><span class="line">$ make result.txt</span><br></pre></td></tr></table></figure>
+<p>上面命令连续执行两次make result.txt。第一次执行会先新建 source.txt，然后再新建 result.txt。第二次执行，Make发现 source.txt 没有变动时间戳晚于 result.txt，就不会执行任何操作，result.txt 也不会重新生成。</p>
+<p>如果需要生成多个文件，往往采用下面的写法。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">source</span>: file1 file2 file3</span><br></pre></td></tr></table></figure>
+<p>上面代码中，source 是一个伪目标，只有三个前置文件，没有任何对应的命令。</p>
+<p>$ make source<br>执行make source命令后，就会一次性生成 file1，file2，file3 三个文件。这比下面的写法要方便很多。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ make file1</span><br><span class="line">$ make file2</span><br><span class="line">$ make file3</span><br></pre></td></tr></table></figure></p>
+<h2 id="2-4-命令commands"><a href="#2-4-命令commands" class="headerlink" title="2.4 命令commands"></a>2.4 命令commands</h2><p>命令(commands)表示如何更新目标文件，由一行或多行的Shell命令组成。它是构建”目标”的具体指令，它的运行结果通常就是生成目标文件。</p>
+<p>每行命令之前必须有一个tab键。如果想用其他键，可以用内置变量.RECIPEPREFIX声明。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.RECIPEPREFIX = &gt;</span><br><span class="line">all:</span><br><span class="line">&gt; <span class="built_in">echo</span> Hello, world</span><br></pre></td></tr></table></figure></p>
+<p>上面代码用.RECIPEPREFIX指定，大于号&gt;替代tab键。所以，每一行命令的起首变成了大于号，而不是tab键。但一般用默认的tab。</p>
+<p>需要注意的是，每行命令在一个单独的shell中执行。这些Shell之间没有继承关系。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var-lost:</span><br><span class="line">    <span class="built_in">export</span> foo=bar</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"foo=[$<span class="variable">$foo</span>]"</span></span><br></pre></td></tr></table></figure></p>
+<p>上面代码执行后(make var-lost)，取不到foo的值。因为两行命令在两个不同的进程执行。一个解决办法是将两行命令写在一行，中间用分号分隔。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var-kept:</span><br><span class="line">    <span class="built_in">export</span> foo=bar; <span class="built_in">echo</span> <span class="string">"foo=[$<span class="variable">$foo</span>]"</span></span><br></pre></td></tr></table></figure></p>
+<p>另一个解决办法是在换行符前加反斜杠转义。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var-kept:</span><br><span class="line">    <span class="built_in">export</span> foo=bar; \</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"foo=[$<span class="variable">$foo</span>]"</span></span><br></pre></td></tr></table></figure>
+<p>最后一个方法是加上.ONESHELL:命令。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.ONESHELL:</span><br><span class="line">var-kept:</span><br><span class="line">    <span class="built_in">export</span> foo=bar; </span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"foo=[$<span class="variable">$foo</span>]"</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="三、Makefile文件的语法"><a href="#三、Makefile文件的语法" class="headerlink" title="三、Makefile文件的语法"></a>三、Makefile文件的语法</h1><h2 id="3-1-注释"><a href="#3-1-注释" class="headerlink" title="3.1 注释"></a>3.1 注释</h2><p>井号(#)在Makefile中表示注释。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这是注释</span></span><br><span class="line">result.txt: source.txt</span><br><span class="line">    <span class="comment"># 这是注释</span></span><br><span class="line">    cp source.txt result.txt <span class="comment"># 这也是注释</span></span><br></pre></td></tr></table></figure>
+<h2 id="3-2-回声-echoing"><a href="#3-2-回声-echoing" class="headerlink" title="3.2 回声(echoing)"></a>3.2 回声(echoing)</h2><p>正常情况下，make会打印每条命令，然后再执行，这就叫做回声(echoing)。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    <span class="comment"># 这是测试</span></span><br></pre></td></tr></table></figure></p>
+<p>执行上面的规则，会得到下面的结果。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ make <span class="built_in">test</span></span><br><span class="line"><span class="comment"># 这是测试</span></span><br></pre></td></tr></table></figure>
+<p>在命令的前面加上@，就可以关闭回声。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="comment"># 这是测试</span></span><br></pre></td></tr></table></figure></p>
+<p>现在再执行make test，就不会有任何输出。</p>
+<p>由于在构建过程中，需要了解当前在执行哪条命令，所以通常只在注释和纯显示的echo命令前面加上@。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="comment"># 这是测试</span></span><br><span class="line">    @<span class="built_in">echo</span> TODO</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-3-通配符"><a href="#3-3-通配符" class="headerlink" title="3.3 通配符"></a>3.3 通配符</h2><p>通配符wildcard用来指定一组符合条件的文件名。Makefile 的通配符与 Bash 一致，主要有星号、问号？和 […] 。比如， .o 表示所有后缀名为o的文件。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">clean:</span><br><span class="line">        rm -f *.o</span><br></pre></td></tr></table></figure>
+<h2 id="3-4-模式匹配"><a href="#3-4-模式匹配" class="headerlink" title="3.4 模式匹配"></a>3.4 模式匹配</h2><p>Make命令允许对文件名，进行类似正则运算的匹配，主要用到的匹配符是%。比如，假定当前目录下有 f1.c 和 f2.c 两个源码文件，需要将它们编译为对应的对象文件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">%.o: %.c</span><br><span class="line">等同于下面的写法。</span><br><span class="line"></span><br><span class="line">f1.o: f1.c</span><br><span class="line">f2.o: f2.c</span><br></pre></td></tr></table></figure></p>
+<p>使用匹配符%，可以将大量同类型的文件，只用一条规则就完成构建。</p>
+<h2 id="3-5-变量和赋值符"><a href="#3-5-变量和赋值符" class="headerlink" title="3.5 变量和赋值符"></a>3.5 变量和赋值符</h2><p>Makefile 允许使用等号自定义变量。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">txt = Hello World</span><br><span class="line"><span class="built_in">test</span>:</span><br><span class="line">    @<span class="built_in">echo</span> $(txt)</span><br></pre></td></tr></table></figure>
+<p>上面代码中，变量 txt 等于 Hello World。调用时，变量需要放在 $( ) 之中。</p>
+<p>调用Shell变量，需要在美元符号前，再加一个美元符号，这是因为Make命令会对美元符号转义。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">test:</span><br><span class="line">    @echo $$HOME</span><br></pre></td></tr></table></figure>
+<p>有时，变量的值可能指向另一个变量。<br>v1 = $(v2)<br>上面代码中，变量 v1 的值是另一个变量 v2。这时会产生一个问题，v1 的值到底在定义时扩展静态扩展，还是在运行时扩展动态扩展？如果 v2 的值是动态的，这两种扩展方式的结果可能会差异很大。</p>
+<p>为了解决类似问题，Makefile一共提供了四个赋值运算符 =、:=、？=、+=，它们的区别请看StackOverflow。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">VARIABLE = value</span><br><span class="line"># 在执行时扩展，允许递归扩展。</span><br><span class="line"></span><br><span class="line">VARIABLE := value</span><br><span class="line"># 在定义时扩展。</span><br><span class="line"></span><br><span class="line">VARIABLE ?= value</span><br><span class="line"># 只有在该变量为空时才设置值。</span><br><span class="line"></span><br><span class="line">VARIABLE += value</span><br><span class="line"># 将值追加到变量的尾端。</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-6-内置变量Implicit-Variables"><a href="#3-6-内置变量Implicit-Variables" class="headerlink" title="3.6 内置变量Implicit Variables"></a>3.6 内置变量Implicit Variables</h2><p>Make命令提供一系列内置变量，比如，$(CC) 指向当前使用的编译器，$(MAKE) 指向当前使用的Make工具。这主要是为了跨平台的兼容性，详细的内置变量清单见手册。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">output:</span><br><span class="line">    $(CC) -o output input.c</span><br></pre></td></tr></table></figure>
+<h2 id="3-7-自动变量Automatic-Variables"><a href="#3-7-自动变量Automatic-Variables" class="headerlink" title="3.7 自动变量Automatic Variables"></a>3.7 自动变量Automatic Variables</h2><p>Make命令还提供一些自动变量，它们的值与当前规则有关。主要有以下几个。</p>
+<h3 id=""><a href="#" class="headerlink" title="$@"></a>$@</h3><p>指代当前目标，就是Make命令当前构建的那个目标。比如，make foo的 $@ 就指代foo。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.txt b.txt: </span><br><span class="line">    touch $@</span><br></pre></td></tr></table></figure></p>
+<p>等同于下面的写法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">a.txt:</span><br><span class="line">    touch a.txt</span><br><span class="line">b.txt:</span><br><span class="line">    touch b.txt</span><br></pre></td></tr></table></figure></p>
+<h3 id="lt"><a href="#lt" class="headerlink" title="$&lt;"></a>$&lt;</h3><p>指代第一个前置条件。比如，规则为 t: p1 p2，那么$&lt; 就指代p1。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.txt: b.txt c.txt</span><br><span class="line">    cp $&lt; $@</span><br></pre></td></tr></table></figure></p>
+<p>等同于下面的写法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a.txt: b.txt c.txt</span><br><span class="line">    cp b.txt a.txt</span><br></pre></td></tr></table></figure></p>
+<h3 id="-1"><a href="#-1" class="headerlink" title="$?"></a>$?</h3><p>指代比目标更新的所有前置条件，以空格分隔。比如规则为 t: p1 p2，其中 p2 的时间戳比 t 新，$?就指代p2。</p>
+<h3 id="-2"><a href="#-2" class="headerlink" title="$^"></a>$^</h3><p>指代所有前置条件，之间以空格分隔。比如，规则为 t: p1 p2，那么 $^ 就指代 p1 p2 。</p>
+<h3 id="-3"><a href="#-3" class="headerlink" title="$*"></a>$*</h3><p>指代匹配符 % 匹配的部分， 比如% 匹配 f1.txt 中的f1 ，$* 就表示 f1。</p>
+<h3 id="D-和-F"><a href="#D-和-F" class="headerlink" title="$(@D) 和 $(@F)"></a>$(@D) 和 $(@F)</h3><p>$(@D) 和 $(@F) 分别指向 $@ 的目录名和文件名。比如，$@是 src/input.c，那么$(@D) 的值为 src ，$(@F) 的值为 input.c。</p>
+<h3 id="lt-D-和-lt-F"><a href="#lt-D-和-lt-F" class="headerlink" title="$(&lt;D) 和 $(&lt;F)"></a>$(&lt;D) 和 $(&lt;F)</h3><p>$(&lt;D) 和 $(&lt;F) 分别指向 $&lt; 的目录名和文件名。</p>
+<p>所有的自动变量清单，请看手册。下面是自动变量的一个例子。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dest/%.txt: src/%.txt</span><br><span class="line">    @[ -d dest ] || mkdir dest</span><br><span class="line">    cp $&lt; <span class="variable">$@</span></span><br></pre></td></tr></table></figure></p>
+<p>上面代码将 src 目录下的 txt 文件，拷贝到 dest 目录下。首先判断 dest 目录是否存在，如果不存在就新建，然后，$&lt; 指代前置文件src/%.txt， $@ 指代目标文件dest/%.txt。</p>
+<h2 id="3-8-判断和循环"><a href="#3-8-判断和循环" class="headerlink" title="3.8 判断和循环"></a>3.8 判断和循环</h2><p>Makefile使用 Bash 语法，完成判断和循环。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">ifeq ($(CC),gcc)</span><br><span class="line">  libs=$(libs_for_gcc)</span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  libs=$(normal_libs)</span><br><span class="line">endif</span><br></pre></td></tr></table></figure>
+<p>上面代码判断当前编译器是否 gcc ，然后指定不同的库文件。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">LIST = one two three</span><br><span class="line">all:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> $(LIST); <span class="keyword">do</span> \</span><br><span class="line">        <span class="built_in">echo</span> $<span class="variable">$i</span>; \</span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line"><span class="comment"># 等同于</span></span><br><span class="line">all:</span><br><span class="line">    <span class="keyword">for</span> i <span class="keyword">in</span> one two three; <span class="keyword">do</span> \</span><br><span class="line">        <span class="built_in">echo</span> <span class="variable">$i</span>; \</span><br><span class="line">    <span class="keyword">done</span></span><br></pre></td></tr></table></figure>
+<p>上面代码的运行结果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">one</span><br><span class="line">two</span><br><span class="line">three</span><br></pre></td></tr></table></figure></p>
+<h2 id="3-9-函数"><a href="#3-9-函数" class="headerlink" title="3.9 函数"></a>3.9 函数</h2><p>Makefile 还可以使用函数，格式如下。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$(<span class="keyword">function</span> arguments)</span><br><span class="line"><span class="comment"># 或者</span></span><br><span class="line"><span class="variable">$&#123;function arguments&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>Makefile提供了许多内置函数，可供调用。下面是几个常用的内置函数。</p>
+<h3 id="shell-函数"><a href="#shell-函数" class="headerlink" title="shell 函数"></a>shell 函数</h3><p>shell 函数用来执行 shell 命令<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srcfiles := $(shell <span class="built_in">echo</span> src/&#123;00..99&#125;.txt)</span><br></pre></td></tr></table></figure></p>
+<h3 id="wildcard-函数"><a href="#wildcard-函数" class="headerlink" title="wildcard 函数"></a>wildcard 函数</h3><p>wildcard 函数用来在 Makefile 中，替换 Bash 的通配符。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">srcfiles := $(wildcard src/*.txt)</span><br></pre></td></tr></table></figure></p>
+<h3 id="subst-函数"><a href="#subst-函数" class="headerlink" title="subst 函数"></a>subst 函数</h3><p>subst 函数用来文本替换，格式如下。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(subst from,to,text)</span><br></pre></td></tr></table></figure></p>
+<p>下面的例子将字符串”feet on the street”替换成”fEEt on the strEEt”。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(subst ee,EE,feet on the street)</span><br></pre></td></tr></table></figure></p>
+<p>下面是一个稍微复杂的例子。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">comma:= ,</span><br><span class="line">empty:=</span><br><span class="line"><span class="comment"># space变量用两个空变量作为标识符，当中是一个空格</span></span><br><span class="line">space:= $(empty) $(empty)</span><br><span class="line">foo:= a b c</span><br><span class="line">bar:= $(subst $(space),$(comma),$(foo))</span><br><span class="line"><span class="comment"># bar is now `a,b,c'.</span></span><br></pre></td></tr></table></figure></p>
+<h3 id="patsubst函数"><a href="#patsubst函数" class="headerlink" title="patsubst函数"></a>patsubst函数</h3><p>patsubst 函数用于模式匹配的替换，格式如下。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(patsubst pattern,replacement,text)</span><br></pre></td></tr></table></figure></p>
+<p>下面的例子将文件名”x.c.c bar.c”，替换成”x.c.o bar.o”。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(patsubst %.c,%.o,x.c.c bar.c)</span><br></pre></td></tr></table></figure></p>
+<h3 id="替换后缀名"><a href="#替换后缀名" class="headerlink" title="替换后缀名"></a>替换后缀名</h3><p>替换后缀名函数的写法是：变量名 + 冒号 + 后缀名替换规则。它实际上patsubst函数的一种简写形式。<br><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">min: $(OUTPUT:.js=.min.js)</span><br></pre></td></tr></table></figure></p>
+<p>上面代码的意思是，将变量OUTPUT中的后缀名 .js 全部替换成 .min.js 。</p>
+<h1 id="四、隐含规则"><a href="#四、隐含规则" class="headerlink" title="四、隐含规则"></a>四、隐含规则</h1><p>Makefile中隐含约定了，不需要我们再明写出的规则,叫隐含规则。比如Makefile能自动推导，把<code>.c</code> 文件编译成<code>.o</code>文件。前提是这些后缀在后缀列表中。<br><code>.out, .a, .ln, .o, .c, .cc, .C, .p, .f, .F, .r, .y, .l, .s, .S, .mod, .sym, .def, .h, .info, .dvi, .tex, .texinfo, .texi, .txinfo, .w, .ch .web, .sh, .elc, .el</code></p>
+<h2 id="模式规则"><a href="#模式规则" class="headerlink" title="模式规则"></a>模式规则</h2><p>可以使用模式规则来定义一个隐含规则。模式规则的目标和目标依赖都含有%<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">%.o:%.c</span><br><span class="line">    $(CC) -c $(CFLAGS) $(CPPFLAGS) $&lt; -o $@</span><br></pre></td></tr></table></figure></p>
+<p>上面这个例子表示了,把所有的 .c 文件都编译成 .o 文件。</p>
+<h2 id="老式后缀规则"><a href="#老式后缀规则" class="headerlink" title="老式后缀规则"></a>老式后缀规则</h2><p>后缀规则一般使用双后缀的方式。这种方式过时了，建议使用模式规则。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.c.o:</span><br><span class="line">    $(CC) -c $(CFLAGS) $(CPPFLAGS) -o $@ $&lt;</span><br></pre></td></tr></table></figure></p>
+<p>这个就等价于模式规则<code>%.o:%.c</code> ，表示把c文件编译成o文件。</p>
+<p>后缀规则中，如果没有命令，那是毫无意义的。因为他也不会移去内建的隐含规则。<br>而要让make知道一些自定义的后缀，我们可以使用伪目标 .SUFFIXES 来定义或是删除。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.SUFFIXES:                # 删除默认的后缀</span><br><span class="line">.SUFFIXES: .ec .c .o .h   # 定义自己的后缀</span><br></pre></td></tr></table></figure></p>
+<h1 id="五、Makefile-的实例"><a href="#五、Makefile-的实例" class="headerlink" title="五、Makefile 的实例"></a>五、Makefile 的实例</h1><h2 id="执行多个目标"><a href="#执行多个目标" class="headerlink" title="执行多个目标"></a>执行多个目标</h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta"><span class="meta-keyword">.PHONY</span>: cleanall cleanobj cleandiff</span></span><br><span class="line"></span><br><span class="line">cleanall : cleanobj cleandiff</span><br><span class="line">        rm program</span><br><span class="line"></span><br><span class="line">cleanobj :</span><br><span class="line">        rm *.o</span><br><span class="line"></span><br><span class="line">cleandiff :</span><br><span class="line">        rm *.diff</span><br></pre></td></tr></table></figure>
+<p>上面代码可以调用不同目标，删除不同后缀名的文件，也可以调用一个目标cleanall，删除所有指定类型的文件。</p>
+<h2 id="编译C语言项目"><a href="#编译C语言项目" class="headerlink" title="编译C语言项目"></a>编译C语言项目</h2><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">edit : main.o kbd.o command.o display.o </span><br><span class="line">    cc -o edit main.o kbd.o command.o display.o</span><br><span class="line"></span><br><span class="line">main.o : main.c defs.h</span><br><span class="line">    cc -c main.c</span><br><span class="line">kbd.o : kbd.c defs.h command.h</span><br><span class="line">    cc -c kbd.c</span><br><span class="line">command.o : command.c defs.h command.h</span><br><span class="line">    cc -c command.c</span><br><span class="line">display.o : display.c defs.h</span><br><span class="line">    cc -c display.c</span><br><span class="line"></span><br><span class="line">clean :</span><br><span class="line">     rm edit main.o kbd.o command.o display.o</span><br><span class="line"></span><br><span class="line"><span class="meta"><span class="meta-keyword">.PHONY</span>: edit clean</span></span><br></pre></td></tr></table></figure>
+          
         
       
     </div>
@@ -585,8 +675,6 @@
           
 
           
-              <div class="post-description">linux环境下的系统性能调优基本知识</div>
-          
 
         </div>
       </header>
@@ -602,13 +690,10 @@
 
       
         
-          
-          
-vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 表示每秒采集一次系统状态，采集10次。1234567891011procs -----------memory---------- ---swap-- -----io---- -system--
-          ...
+          linux环境下的系统性能调优基本知识
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2019/03/07/performance-analysis.html#more" rel="contents">
+            <a class="btn" href="/2019/03/07/performance-analysis.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -760,16 +845,96 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
       
         
           
-          1.前提知识文件开头#!/usr/bin/python指定编译器。指定的编译器会来解释该python文件。# -*-encoding:utf-8 -*-指定文件用utf-8编码。 
-保留字and assert break class continue def del elif elseexcept 
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/02/19/python-basic.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h1 id="1-前提知识"><a href="#1-前提知识" class="headerlink" title="1.前提知识"></a>1.前提知识</h1><h2 id="文件开头"><a href="#文件开头" class="headerlink" title="文件开头"></a>文件开头</h2><p><code>#!/usr/bin/python</code><br>指定编译器。指定的编译器会来解释该python文件。<br><code># -*-encoding:utf-8 -*-</code><br>指定文件用utf-8编码。 </p>
+<h2 id="保留字"><a href="#保留字" class="headerlink" title="保留字"></a>保留字</h2><p><code>and assert break class continue def del elif else</code><br><code>except exec finally for from global if import in is</code><br><code>lambda not or pass print raise return try while with yield</code> </p>
+<h2 id="缩进和语句"><a href="#缩进和语句" class="headerlink" title="缩进和语句"></a>缩进和语句</h2><p>缩进用Tab，严格要求。语句结束没有分号，利用缩进标识一个语句。 </p>
+<h2 id="查找帮助文档"><a href="#查找帮助文档" class="headerlink" title="查找帮助文档"></a>查找帮助文档</h2><p>python文档方便、丰富，主要通过dir 和help查看帮助文档。<br>例子：查阅列表 <code>dir(list)</code>,看到列表有extend方法，继续查看：<code>help(list.extend)</code> </p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>注释语句用#开头；<br>引用使用成对的单引号、双引号、三引号标识；<br>单行多语句，用分号隔开。 </p>
+<h1 id="2-动态类型"><a href="#2-动态类型" class="headerlink" title="2.动态类型"></a>2.动态类型</h1><p>python的变量使用前不需要声明，这是python动态类型的体现。<br><code>&gt;&gt;&gt;a=3</code><br>变量a和数值对象3存储在内存中不同位置，a是对3的引用。<br>类型与对象相关，与变量无关。<br><img src="python-basic/dynamic-type.jpg" alt="动态类型示意图"><br><img src="python-basic/dynamic-type-example.jpg" alt="动态类型举例"></p>
+<p>共享引用和在原处修改：<br>有时为了避免引用同一对象，需要使用完全的拷贝。<br>python里达到拷贝的方法有如下： </p>
+<ol>
+<li>分片表达式L[:]能够复制整个序列。 </li>
+<li>字典的copy方法D.copy()复制字典。 </li>
+<li>copy标准库模块能够生成拷贝。  </li>
+</ol>
+<h1 id="3-操作符优先级"><a href="#3-操作符优先级" class="headerlink" title="3.操作符优先级"></a>3.操作符优先级</h1><p><img src="python-basic/oper_priority.png" alt="操作符优先级"></p>
+<h1 id="4-数据类型"><a href="#4-数据类型" class="headerlink" title="4.数据类型"></a>4.数据类型</h1><p>python主要的内置数据类型有：数字、字符串、列表、元组、字典、文件，等。<br>字符串、列表、元组都属于序列。通用的序列操作都适用。<br>假如<code>s=&quot;SLICEOFSPAM&quot; s2=&quot;1234&quot;</code><br>通用序列操作如下：<br>索引和分片：<br><code>&gt;&gt;&gt; s[0:3]</code><br>‘SLI’<br>字符串反转：<br><code>&gt;&gt;&gt; s[::-1]</code><br>‘MAPSFOECILS’ </p>
+<p>分片图示如下：<br><img src="python-basic/slice.jpg" alt="分片图示"> </p>
+<h2 id="字符串"><a href="#字符串" class="headerlink" title="字符串"></a>字符串</h2><p>字符串是不能修改的。 </p>
+<h3 id="字符串格式化"><a href="#字符串格式化" class="headerlink" title="字符串格式化"></a>字符串格式化</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; <span class="string">"%s,open the %s"</span>%(<span class="string">"Bob"</span>,<span class="string">"door"</span>)</span><br><span class="line"><span class="string">'Bob,open the door'</span></span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="字符串转义"><a href="#字符串转义" class="headerlink" title="字符串转义"></a>字符串转义</h3><p>比如<code>open(&#39;C:\new\test.txt&#39;,r)</code> 会被识别为含有换行符和制表符。<br>为了正常使用，有两个办法：<br>可以转义：<code>open(&#39;C:\\new\\test.txt&#39;,r)</code><br>也可以raw字符串：<code>open(r&#39;C:\new\test.txt&#39;,r)</code><br>raw字符串：如果字母r出现在字符串的第一个引号前面，那么就关闭\的转义机制。 </p>
+<h3 id="常见的字符串操作"><a href="#常见的字符串操作" class="headerlink" title="常见的字符串操作"></a>常见的字符串操作</h3><p><img src="python-basic/str_oper.jpg" alt="字符串操作"></p>
+<h3 id="常见字符串方法"><a href="#常见字符串方法" class="headerlink" title="常见字符串方法"></a>常见字符串方法</h3><p><img src="python-basic/str_method.jpg" alt="字符串方法"></p>
+<h1 id="5-列表字典和元组"><a href="#5-列表字典和元组" class="headerlink" title="5.列表字典和元组"></a>5.列表字典和元组</h1><h2 id="列表"><a href="#列表" class="headerlink" title="列表"></a>列表</h2><p>用中括号表示。<code>L=[12,&#39;ab&#39;,3]</code><br>可以用list建立列表：<code>list(&quot;Hello&quot;)</code>  </p>
+<h3 id="列表基本操作"><a href="#列表基本操作" class="headerlink" title="列表基本操作"></a>列表基本操作</h3><p><img src="python-basic/list_oper.jpg" alt="字符串操作"></p>
+<h2 id="字典"><a href="#字典" class="headerlink" title="字典"></a>字典</h2><p>用大括号表示。以键值对<code>(key:value)</code>的形式出现。<br>字典用key来索引。<br><code>d={&quot;Hubei&quot;:&quot;Wuhan&quot;,&quot;Jiangsu&quot;:&quot;Nanjing&quot;}</code><br>可以用dict创建字典:<code>dict([(&#39;age&#39;:42),(&#39;name&#39;:&#39;Bob&#39;)])</code></p>
+<h3 id="字典基本操作"><a href="#字典基本操作" class="headerlink" title="字典基本操作"></a>字典基本操作</h3><p><img src="python-basic/dict_oper.jpg" alt="字典操作"></p>
+<h2 id="元组"><a href="#元组" class="headerlink" title="元组"></a>元组</h2><p>用小括号表示。元组内容不可变。 </p>
+<h3 id="元组常用操作"><a href="#元组常用操作" class="headerlink" title="元组常用操作"></a>元组常用操作</h3><p><img src="python-basic/tuple_oper.jpg" alt="元组操作"></p>
+<h1 id="6-控制语句"><a href="#6-控制语句" class="headerlink" title="6.控制语句"></a>6.控制语句</h1><p>if语句例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> a&lt;<span class="number">10</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"a&lt;10"</span></span><br><span class="line"><span class="keyword">elif</span> a&gt;<span class="number">10</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"a&gt;10"</span></span><br><span class="line"><span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">print</span> <span class="string">"a=10"</span></span><br></pre></td></tr></table></figure></p>
+<p>for语句例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> x <span class="keyword">in</span> range(<span class="number">0</span>,<span class="number">5</span>):</span><br><span class="line">    <span class="keyword">print</span> x</span><br></pre></td></tr></table></figure></p>
+<p>while语句例子：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">x=<span class="number">0</span></span><br><span class="line"><span class="keyword">while</span> x &lt;<span class="number">10</span>:</span><br><span class="line">    x+=<span class="number">1</span></span><br><span class="line"><span class="keyword">print</span> x</span><br></pre></td></tr></table></figure></p>
+<p>这些控制语句都是可以迭代的。<br>pass语句：空语句，什么也不做。相当于C语言里的分号语句。<br>另外还有，continue语句，break语句等。 </p>
+<h1 id="7-函数python"><a href="#7-函数python" class="headerlink" title="7.函数python"></a>7.函数python</h1><h2 id="7-1-函数示例"><a href="#7-1-函数示例" class="headerlink" title="7.1 函数示例"></a>7.1 函数示例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">add</span><span class="params">(a,b)</span>:</span>     </span><br><span class="line">    <span class="string">'This is an add function.'</span></span><br><span class="line">    <span class="keyword">return</span> a+b</span><br><span class="line"><span class="keyword">print</span> add(<span class="number">3</span>,<span class="number">5</span>)</span><br></pre></td></tr></table></figure>
+<p>函数说明档是字符串；函数返回值可有可无； </p>
+<h2 id="7-2-参数作用域"><a href="#7-2-参数作用域" class="headerlink" title="7.2 参数作用域"></a>7.2 参数作用域</h2><p>函数内为参数赋予新值，不改变外部变量的值。<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name)</span>:</span>   </span><br><span class="line">    name = <span class="string">'Bob'</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"hello,"</span>,name   </span><br><span class="line"> </span><br><span class="line">name = <span class="string">"Jim"</span></span><br><span class="line">hello(name)   </span><br><span class="line"><span class="keyword">print</span> (<span class="string">'Now name is:%s'</span>)%name</span><br><span class="line"></span><br><span class="line">---python output---</span><br><span class="line">hello, Bob </span><br><span class="line">Now name <span class="keyword">is</span>:Jim </span><br><span class="line">-------------------</span><br></pre></td></tr></table></figure></p>
+<p>但是，如果参数引用的是一些列表，字典等，就会改变结果。 </p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(names)</span>:</span> </span><br><span class="line">    names[<span class="number">0</span>] = <span class="string">'Bob'</span></span><br><span class="line">    <span class="keyword">print</span> <span class="string">"In func,names:"</span>,names</span><br><span class="line">names_all = [<span class="string">'Jim'</span>,<span class="string">'Alice'</span>,<span class="string">'Dav'</span>]</span><br><span class="line">hello(names_all)</span><br><span class="line"><span class="keyword">print</span> <span class="string">'out:'</span>,names_all</span><br><span class="line">-----python output-----</span><br><span class="line">In func,names: [<span class="string">'Bob'</span>, <span class="string">'Alice'</span>, <span class="string">'Dav'</span>] </span><br><span class="line">out: [<span class="string">'Bob'</span>, <span class="string">'Alice'</span>, <span class="string">'Dav'</span>]</span><br><span class="line">-----------------------</span><br></pre></td></tr></table></figure>
+<p>当两个变量同时引用一个列表，实际是操作的同一个列表。<br>局部变量与全局变量同名：<br>函数内改变局部变量值，不影响全局变量。<br>如果函数内要访问全局变量，使用global标识全局变量名。 </p>
+<h2 id="7-3-参数位置和默认值"><a href="#7-3-参数位置和默认值" class="headerlink" title="7.3 参数位置和默认值"></a>7.3 参数位置和默认值</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">hello</span><span class="params">(name,greeting=<span class="string">"Ni hao"</span>)</span>:</span>  </span><br><span class="line">    <span class="keyword">print</span> <span class="string">"%s,%s!"</span>%(greeting,name)  </span><br><span class="line">hello(name=<span class="string">'David'</span>)  </span><br><span class="line">hello(<span class="string">'Bob'</span>,<span class="string">"Hi"</span>)  </span><br><span class="line">hello(<span class="string">"Alice"</span>)  </span><br><span class="line">hello(name=<span class="string">"Annie"</span>,greeting=<span class="string">"hey"</span>)</span><br><span class="line">---------- python  output----</span><br><span class="line">Ni hao,David! </span><br><span class="line">Hi,Bob! </span><br><span class="line">Ni hao,Alice!   </span><br><span class="line">hey,Annie!  </span><br><span class="line">-------------------------</span><br></pre></td></tr></table></figure>
+<p> 函数定义里，无默认值的形参在前。<br> 函数调用时，传参方法多种。见代码 </p>
+<h2 id="7-4参数传递"><a href="#7-4参数传递" class="headerlink" title="7.4参数传递"></a>7.4参数传递</h2><p>普通参数：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">param_show</span><span class="params">(*param)</span>:</span>  </span><br><span class="line">    <span class="keyword">print</span> param  </span><br><span class="line">param_show(<span class="number">12</span>,<span class="string">'ab'</span>,<span class="number">3.21</span>)</span><br><span class="line">-------- python ---------- </span><br><span class="line">(<span class="number">12</span>, <span class="string">'ab'</span>, <span class="number">3.21</span>) </span><br><span class="line">----------------------------</span><br></pre></td></tr></table></figure></p>
+<p> 这样参数放在元组里传递进来。 </p>
+<p>关键字参数：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">param_show</span><span class="params">(**param)</span>:</span> </span><br><span class="line">    <span class="keyword">print</span> param </span><br><span class="line">param_show(a=<span class="number">12</span>,b=<span class="number">15</span>,c=<span class="number">20</span>)</span><br><span class="line">---------- python ---------- </span><br><span class="line">&#123;<span class="string">'a'</span>: <span class="number">12</span>, <span class="string">'c'</span>: <span class="number">20</span>, <span class="string">'b'</span>: <span class="number">15</span>&#125; </span><br><span class="line">----------------------------</span><br></pre></td></tr></table></figure></p>
+<p> 关键字参数作为字典传递进来。 </p>
+<h2 id="7-5-匿名函数lambda"><a href="#7-5-匿名函数lambda" class="headerlink" title="7.5 匿名函数lambda"></a>7.5 匿名函数lambda</h2><p><code>&gt;&gt;&gt;x=lambda a,b,c:a+b+c</code><br> <code>&gt;&gt;&gt;x(&quot;He&quot;,&quot;is&quot;,&quot;dog&quot;)</code><br> <code>&gt;&gt;&gt;He is dog</code></p>
+<h1 id="8-捕捉异常python"><a href="#8-捕捉异常python" class="headerlink" title="8.捕捉异常python"></a>8.捕捉异常python</h1><p>详细：先import exceptions，再help(exceptions)<br> 最常见形式：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span>:  </span><br><span class="line">    x=<span class="number">10</span></span><br><span class="line">    y=<span class="number">0</span></span><br><span class="line">    <span class="keyword">print</span> x/y  </span><br><span class="line"><span class="keyword">except</span> ZeroDivisionError:  </span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Divisor can't be zero."</span></span><br></pre></td></tr></table></figure></p>
+<p>在try里执行，在exception里捕捉异常，进行处理。 </p>
+<p>很完整的用法：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#-*-encoding:utf-8 -*-    </span></span><br><span class="line"><span class="keyword">try</span>:    </span><br><span class="line">    <span class="keyword">import</span> xxmodule    </span><br><span class="line">    <span class="keyword">print</span> y    </span><br><span class="line"><span class="keyword">except</span> (ImportError,NameError),e:    </span><br><span class="line">    <span class="keyword">print</span> <span class="string">"Nothing serious."</span>,e    </span><br><span class="line">    <span class="keyword">raise</span></span><br><span class="line"><span class="keyword">else</span>:    </span><br><span class="line">    <span class="keyword">print</span> <span class="string">"else clause"</span></span><br><span class="line"><span class="keyword">finally</span>:    </span><br><span class="line">    <span class="keyword">print</span> <span class="string">"finally clause"</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>有异常： try–&gt;excecpt–&gt;finally  </strong><br><strong>没有异常：try–&gt;else–&gt;finally </strong></p>
+<p>except(ImportError,NameError)可以捕捉两个异常之一，但是只捕捉最先引发的异常。<br>except 后面加e，可以将系统异常信息存储，打印出来。<br>捕捉并处理了异常后，仍可将该异常再次引发，在try语句块执行完后，系统会处理。  </p>
+<p>异常是python的一个类object，各种触发的异常都是exceptions子类的实例。<br> 下面是运行结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">---------- python ----------</span><br><span class="line">Nothing serious. No module named xxmodule</span><br><span class="line">finally clause</span><br><span class="line">Traceback (most recent call last):</span><br><span class="line">  File &quot;exceptions.py&quot;, line 3, in &lt;module&gt;</span><br><span class="line">    import xxmodule</span><br><span class="line">ImportError: No module named xxmodule</span><br></pre></td></tr></table></figure></p>
+<h1 id="9-文件操作python"><a href="#9-文件操作python" class="headerlink" title="9.文件操作python"></a>9.文件操作python</h1><p>详细文档：help(file) </p>
+<h2 id="9-1读操作"><a href="#9-1读操作" class="headerlink" title="9.1读操作"></a>9.1读操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">f=open(<span class="string">"data.txt"</span>,<span class="string">'r'</span>)  <span class="comment">#读方式打开文件 </span></span><br><span class="line">f.read(<span class="number">4</span>)                    <span class="comment">#读4个字符 </span></span><br><span class="line">text=f.readlines()     <span class="comment">#按行读出所有内容,每行为一个列表元素。 </span></span><br><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> text：  </span><br><span class="line">    <span class="keyword">print</span> text</span><br><span class="line">f.close()                     <span class="comment">#关闭文件</span></span><br></pre></td></tr></table></figure>
+<h2 id="9-2写操作"><a href="#9-2写操作" class="headerlink" title="9.2写操作"></a>9.2写操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f=open(<span class="string">"data.txt"</span>,<span class="string">'w'</span>)<span class="comment"># 常用r+以读写方式打开文件 </span></span><br><span class="line">f.seek(<span class="number">5</span>)                    <span class="comment">#定位起始写入位置</span></span><br><span class="line">f.write(<span class="string">"hello,world"</span>)</span><br><span class="line">f.writelines([<span class="string">"first line"</span>,<span class="string">"second line."</span>]) <span class="comment">#把列表元素按行写入文件</span></span><br><span class="line">f.close()  <span class="comment">#显式关闭，确保数据刷到硬盘</span></span><br></pre></td></tr></table></figure>
+<h2 id="9-3文件迭代器"><a href="#9-3文件迭代器" class="headerlink" title="9.3文件迭代器"></a>9.3文件迭代器</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> line <span class="keyword">in</span> open(<span class="string">"data.txt"</span>):</span><br><span class="line">    <span class="keyword">print</span> line      <span class="comment">#可以不用关闭</span></span><br></pre></td></tr></table></figure>
+<h1 id="10-类和面向对象-python"><a href="#10-类和面向对象-python" class="headerlink" title="10.类和面向对象 python"></a>10.类和面向对象 python</h1><p><strong>类class</strong>：是实例instance的生产工厂。<br><strong>类方法</strong>：class顶层定义的函数。<br><strong>类属性</strong>：class顶层定义的变量。<br><strong>实例属性</strong>：类方法中赋给self的属性。<br><strong>self参数</strong>：类方法函数的第一个参数，它代表具体的实例对象。<br><strong><strong>init</strong>:构造器</strong>：实例创建时，python就会调用它。<br><strong>继承搜索顺序</strong>：1，实例对象；2，创建实例的类；3，对象树较高的超类，从左至右。 </p>
+<p>示例代码：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#encoding=utf-8</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">human</span><span class="params">()</span>:</span>                   <span class="comment">#超类定义</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span> <span class="params">(self,legs)</span>:</span>    <span class="comment">#构造器</span></span><br><span class="line">        self.legs = <span class="number">2</span>            <span class="comment">#实例属性</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">getlegs</span> <span class="params">(self)</span>:</span>          <span class="comment">#类方法</span></span><br><span class="line">        <span class="keyword">return</span> self.legs</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">boy</span><span class="params">(human)</span>:</span>                <span class="comment">#子类定义</span></span><br><span class="line">    claim=<span class="string">'This is boy class.'</span>   <span class="comment">#类属性</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">__init__</span> <span class="params">(self,legs)</span>:</span>    <span class="comment">#构造器</span></span><br><span class="line">        human.__init__(self,legs)     </span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setname</span><span class="params">(self,names)</span>:</span>     <span class="comment">#子类方法</span></span><br><span class="line">        self.names = names       <span class="comment">#实例属性</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">setclaim</span> <span class="params">(self,strings)</span>:</span></span><br><span class="line">        self.claim = strings     <span class="comment">#实例属性 </span></span><br><span class="line"> </span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</span><br><span class="line">    xboy = boy(<span class="number">2</span>)                <span class="comment">#生成实例</span></span><br><span class="line">    <span class="keyword">print</span> xboy.legs              <span class="comment">#打印实例属性</span></span><br><span class="line">    xboy.setname(<span class="string">'Jim'</span>)          <span class="comment">#调用实例方法设置实例属性</span></span><br><span class="line">    <span class="keyword">print</span> xboy.names             <span class="comment">#打印实例属性</span></span><br><span class="line">    <span class="keyword">print</span> xboy.claim             <span class="comment">#打印实例属性，不存在，则继承同名类属性</span></span><br><span class="line">    xboy.setclaim(<span class="string">'This is boy instance'</span>) <span class="comment">#用实例方法设置实例属性</span></span><br><span class="line">    <span class="keyword">print</span> xboy.claim             <span class="comment">#打印实例属性</span></span><br></pre></td></tr></table></figure></p>
+<p>输出结果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">---------- python ----------</span><br><span class="line">2</span><br><span class="line">Jim</span><br><span class="line">This is boy class.</span><br><span class="line">This is boy instance</span><br></pre></td></tr></table></figure></p>
+<h1 id="11-python的模块和包"><a href="#11-python的模块和包" class="headerlink" title="11.python的模块和包"></a>11.python的模块和包</h1><h2 id="模块对应python文件"><a href="#模块对应python文件" class="headerlink" title="模块对应python文件"></a>模块对应python文件</h2><p>比如import time就是导入的time.py文件。<br>常见导入方式：<br><code>import ModuleName</code><br><code>from ModuleName import Method</code></p>
+<p>实例：<br><code>&gt;&gt;&gt;import urllib</code><br><code>&gt;&gt;&gt;urllib.open(&quot;www.xxx.com&quot;)</code></p>
+<p>如果import的名字太长，可以用<br><code>import longlonglongname as shortname</code></p>
+<h2 id="模块搜索路径"><a href="#模块搜索路径" class="headerlink" title="模块搜索路径"></a>模块搜索路径</h2><p>在导入模块时，依次搜索主目录，PYTHONPATH目录，标准库目录, .py文件目录。<br>python模块的导入，只会被载入和执行一次。除非使用reload再次导入。 </p>
+<h2 id="python的包"><a href="#python的包" class="headerlink" title="python的包"></a>python的包</h2><p>也可以将一个目录作为包导入。目录里要有<strong>init</strong>.py文件。它完成包的一些初始化工作。<br>包导入：import dir1.dir2.mod。表示导入目录dir1下的目录dir2下的mod.py。这里dir1和dir2下都要有<code>__init__.py</code>文件。 </p>
+<p> <code>__name__和__main__</code>：<br>文件如果是以顶层文件执行，则启动时，<code>__name__</code>就被设置为<code>“__main__”</code>;<br>文件如果是被作为模块导入，则被载入时<code>__name__</code>就被设置为模块名称。<br>所以，编写一个文件，常常用到if来判断：<br><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>: </span><br><span class="line">    run <span class="keyword">as</span> main.</span><br></pre></td></tr></table></figure></p>
+<h1 id="12-python的命名空间、作用域"><a href="#12-python的命名空间、作用域" class="headerlink" title="12.python的命名空间、作用域"></a>12.python的命名空间、作用域</h1><p>直接通过代码例子说明如下： </p>
+<pre><code class="python"><span class="comment">#encoding=utf-8</span>
+<span class="comment">#manynames.py</span>
+X=<span class="number">11</span>                        <span class="comment">#模块全局变量X</span>
+<span class="function"><span class="keyword">def</span> <span class="title">f</span><span class="params">()</span>:</span>                  
+    <span class="keyword">print</span> X                 <span class="comment">#打印全局变量X</span>
+<span class="function"><span class="keyword">def</span> <span class="title">g</span> <span class="params">()</span>:</span>
+    X=<span class="number">22</span>                    <span class="comment">#函数局部变量X</span>
+    <span class="keyword">print</span> X
+<span class="class"><span class="keyword">class</span> <span class="title">C</span><span class="params">()</span>:</span>                
+    X=<span class="number">33</span>                    <span class="comment">#类属性C.X</span>
+    <span class="function"><span class="keyword">def</span> <span class="title">m</span> <span class="params">(self)</span>:</span>
+        X=<span class="number">44</span>                <span class="comment">#类方法局部变量X</span>
+        self.X=<span class="number">55</span>           <span class="comment">#实例属性X</span>
+
+<span class="keyword">if</span> __name__==<span class="string">'__main__'</span>:
+    <span class="keyword">print</span> X                 <span class="comment">#11.全局变量X</span>
+    f()                     <span class="comment">#11.全局变量X</span>
+    g()                     <span class="comment">#22.函数局部变量X</span>
+    <span class="keyword">print</span> X                 <span class="comment">#11.还是全局变量X</span>
+    obj=C()   
+    <span class="keyword">print</span> obj.X             <span class="comment">#33.继承类属性X</span>
+    obj.m()               
+    <span class="keyword">print</span> obj.X             <span class="comment">#55. 实例属性X</span>
+    <span class="keyword">print</span> C.X               <span class="comment">#33. 类属性X</span>
+</code></pre>
+
+          
         
       
     </div>
@@ -917,16 +1082,9 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
       
         
           
-          类和对象接口与继承接口对象转型重写多态隐藏superObject类final抽象类内部类默认方法# 
+            <h1 id="类和对象"><a href="#类和对象" class="headerlink" title="类和对象"></a>类和对象</h1><h1 id="接口与继承"><a href="#接口与继承" class="headerlink" title="接口与继承"></a>接口与继承</h1><h2 id="接口"><a href="#接口" class="headerlink" title="接口"></a>接口</h2><h2 id="对象转型"><a href="#对象转型" class="headerlink" title="对象转型"></a>对象转型</h2><h2 id="重写"><a href="#重写" class="headerlink" title="重写"></a>重写</h2><h2 id="多态"><a href="#多态" class="headerlink" title="多态"></a>多态</h2><h2 id="隐藏"><a href="#隐藏" class="headerlink" title="隐藏"></a>隐藏</h2><h2 id="super"><a href="#super" class="headerlink" title="super"></a>super</h2><h2 id="Object类"><a href="#Object类" class="headerlink" title="Object类"></a>Object类</h2><h2 id="final"><a href="#final" class="headerlink" title="final"></a>final</h2><h2 id="抽象类"><a href="#抽象类" class="headerlink" title="抽象类"></a>抽象类</h2><h2 id="内部类"><a href="#内部类" class="headerlink" title="内部类"></a>内部类</h2><h2 id="默认方法"><a href="#默认方法" class="headerlink" title="默认方法"></a>默认方法</h2><p># </p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2019/02/19/java-basics.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1058,8 +1216,6 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
           
 
           
-              <div class="post-description">地藏菩萨本愿经经文</div>
-          
 
         </div>
       </header>
@@ -1075,17 +1231,10 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
 
       
         
-          
-           唐●于阗国●三藏沙门●实叉难陀　译 
-
-开经偈无上甚深微妙法　百千万劫难遭遇我今见闻得受持　愿解如来真实义
-
-
-地藏菩萨本愿经卷上忉利天宫神通品第一如是我闻，一时佛在忉利天，为母说法。尔时十方无量世界，不可说不可说，一切诸佛，及大菩萨摩诃萨，皆来集会，赞叹释迦牟尼佛，能于五浊恶世，现不可思议大智慧
-          ...
+          地藏菩萨本愿经经文
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/12/27/dizangjing.html#more" rel="contents">
+            <a class="btn" href="/2018/12/27/dizangjing.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1237,16 +1386,12 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
       
         
           
+            <blockquote>
+<p>纽约时间比加州时间早三个小时，<br>New York is 3 hours ahead of California,<br>但加州时间并没有变慢。<br>but it does not make California slow.<br>有人22岁就毕业了，<br>Someone graduated at the age of 22,<br>但等了五年才找到稳定的工作！<br>but waited 5 years before securing a good job!<br>有人25岁就当上CEO，<br>Someone became a CEO at 25,<br>却在50岁去世。<br>and died at 50.<br>也有人迟到50岁才当上CEO，<br>While another became a CEO at 50,<br>然后活到90岁。<br>and lived to 90 years.<br>有人单身，<br>Someone is still single,<br>同时也有人已婚。<br>while someone else got married.<br>奥巴马55岁就退休，<br>Obama retires at 55,<br>川普70岁才开始当总统。<br>but Trump starts at 70.<br>世上每个人本来就有自己的发展时区。<br>Absolutely everyone in this world works based on their Time Zone.<br>身边有些人看似走在你前面，<br>People around you might seem to go ahead of you,<br>也有人看似走在你后面。<br>some might seem to be behind you.<br>但其实每个人在自己的时区有自己的步程。<br>But everyone is running their own RACE, in their own TIME.<br>不用嫉妒或嘲笑他们。<br>Don’t envy them or mock them.<br>他们都在自己的时区里，你也是！<br>They are in their TIME ZONE, and you are in yours!<br>生命就是等待正确的行动时机。<br>Life is about waiting for the right moment to act.<br>所以，放轻松。<br>So, RELAX.<br>你没有落后。<br>You’re not LATE.<br>你没有领先。<br>You’re not EARLY.<br>在命运为你安排的属于自己的时区里，一切都准时。<br>You are very much ON TIME, and in your TIME ZONE Destiny set up for you.  </p>
+</blockquote>
+<p>大学室友在qq上发来的一段最近很火的诗。很喜欢，复制到这里，给自己加个油。    </p>
+
           
-纽约时间比加州时间早三个小时，New York is 3 hours ahead of California,但加州时间并没有变慢。but it does not make California slow.有人22岁就毕业了，Someone graduated at the age of 22,但
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2018/01/17/youarenotlate.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1378,8 +1523,6 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
           
 
           
-              <div class="post-description">今天是2018年的元旦。2017年过去了，个人年度总结写在这里，留着来年复盘。</div>
-          
 
         </div>
       </header>
@@ -1395,10 +1538,10 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
 
       
         
-          The article has been encrypted, please enter your password to view.<br>
+          今天是2018年的元旦。2017年过去了，个人年度总结写在这里，留着来年复盘。
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2018/01/01/annual-review-2017.html#more" rel="contents">
+            <a class="btn" href="/2018/01/01/annual-review-2017.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1534,16 +1677,9 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
       
         
           
-          阳仔拖油瓶记  广水阳仔，年方二八，丁酉年二月底患病，带病打dota。  然，战六局至午夜，连输五场。祸及队友。险跌分至一千内。  每思及此，阳仔不觉惭愧，而队友捶胸顿足，内心愤懑潸然泪下。  谨以此文，劝服阳仔，有病早治，无病早防。
+            <h2 id="阳仔拖油瓶记"><a href="#阳仔拖油瓶记" class="headerlink" title="阳仔拖油瓶记"></a>阳仔拖油瓶记</h2><p>  广水阳仔，年方二八，丁酉年二月底患病，带病打dota。<br>  然，战六局至午夜，连输五场。祸及队友。险跌分至一千内。<br>  每思及此，阳仔不觉惭愧，而队友捶胸顿足，内心愤懑潸然泪下。<br>  谨以此文，劝服阳仔，有病早治，无病早防。</p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2017/02/27/tuoyouping.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1675,15 +1811,8 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
       
         
           
-          禹玮二愣子哈哈哈哈哈！
+            <h1 id="禹玮二愣子哈哈哈哈哈！"><a href="#禹玮二愣子哈哈哈哈哈！" class="headerlink" title="禹玮二愣子哈哈哈哈哈！"></a>禹玮二愣子哈哈哈哈哈！</h1>
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/12/21/yuwei2.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -1815,17 +1944,12 @@ vmstat全称为virtual memory stat,它能打印内存使用情况。vmstat 1 10 
       
         
           
-          创建新的虚拟桌面：Win + Ctrl + D关闭当前虚拟桌面：Win + Ctrl + F4切换虚拟桌面：    Win + Ctrl +左/右  
-切换窗口：Alt + Tab任务视图：Win + Tab  
-Win键 桌面与开始菜单切换按键Win + R 打开运行对话框Win + A 操作中心
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/08/11/win10-shortcut.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>创建新的虚拟桌面：<code>Win + Ctrl + D</code><br>关闭当前虚拟桌面：<code>Win + Ctrl + F4</code><br>切换虚拟桌面：    <code>Win + Ctrl +左/右</code>  </p>
+<p>切换窗口：<code>Alt + Tab</code><br>任务视图：<code>Win + Tab</code>  </p>
+<p><code>Win键</code> 桌面与开始菜单切换按键<br><code>Win + R</code> 打开运行对话框<br><code>Win + A</code> 操作中心<br><code>Win + I</code> Win10设置栏<br><code>Ctrl+Alt+Del</code> 任务管理器<br><code>Alt+F4</code> 关机快捷键  </p>
+<p><code>Win + 数字键</code>：打开或切换位于任务栏指定位置的程序<br><code>Win+D</code>：显示桌面<br><code>Win+ P</code>：演示设置<br><code>Win+L</code>：锁住电脑或切换用户<br><code>Win+PrtSc</code> 截屏<br><code>Win+ G</code>  打开游戏录制<br><code>Win+ALT+R</code>屏幕录制  </p>
+
+          
         
       
     </div>
@@ -2257,13 +2381,6 @@ Win键 桌面与开始菜单切换按键Win + R 打开运行对话框Win + A 操
 
   
   
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
-
-
 
   
 

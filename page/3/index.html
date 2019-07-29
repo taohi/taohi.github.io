@@ -14,7 +14,7 @@
   
 
 
-<html class="theme-next gemini use-motion" lang="zh-CN">
+<html class="theme-next muse use-motion" lang="zh-CN">
 <head>
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -84,7 +84,7 @@
   var NexT = window.NexT || {};
   var CONFIG = {
     root: '/',
-    scheme: 'Gemini',
+    scheme: 'Muse',
     version: '6.3.0',
     sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: false,
@@ -282,6 +282,9 @@
   
 
   
+    
+
+  
 
   
     <div class="site-search">
@@ -324,9 +327,6 @@
     <main id="main" class="main">
       <div class="main-inner">
         <div class="content-wrap">
-          
-            
-
           
           <div id="content" class="content">
             
@@ -443,17 +443,10 @@
       
         
           
-          进程是独立的资源管理单元。不同进程之间需要交互信息，这就需要进程间通信。  
-Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进程间通信机制如下图所示。这样看起来，有8种。后续按照编号逐一介绍。  
+            <p>进程是独立的资源管理单元。不同进程之间需要交互信息，这就需要进程间通信。  </p>
+<p>Linux继承了<code>Unix</code>和<code>System V</code>的进程间通信方式。Linux支持的主要进程间通信机制如下图所示。<br><img src="/2015/02/03/linux-ipc/IPC_overview.png" title="进程间通信总述"><br>这样看起来，有8种。后续按照编号逐一介绍。  </p>
 
           
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/02/03/linux-ipc.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
         
       
     </div>
@@ -601,18 +594,31 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
       
         
           
-          地址类型80X86的体系结构，有如下三种地址：
-逻辑地址是虚拟地址空间。就是每个进程使用的独立逻辑地址，通常为4GB。逻辑地址=段选择符(16bit) + 段内偏移(32bit)。常说的逻辑地址就是这32位段内偏移。
-线性地址(虚拟地址)值从0x00000000到0xffffffff
-物理地址就是物
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/02/02/linux-address-mapping.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="地址类型"><a href="#地址类型" class="headerlink" title="地址类型"></a>地址类型</h2><p>80X86的体系结构，有如下三种地址：</p>
+<h3 id="逻辑地址"><a href="#逻辑地址" class="headerlink" title="逻辑地址"></a>逻辑地址</h3><p>是虚拟地址空间。就是每个进程使用的独立逻辑地址，通常为4GB。<br>逻辑地址=段选择符(16bit) + 段内偏移(32bit)。常说的逻辑地址就是这32位段内偏移。</p>
+<h3 id="线性地址-虚拟地址"><a href="#线性地址-虚拟地址" class="headerlink" title="线性地址(虚拟地址)"></a>线性地址(虚拟地址)</h3><p>值从0x00000000到0xffffffff</p>
+<h3 id="物理地址"><a href="#物理地址" class="headerlink" title="物理地址"></a>物理地址</h3><p>就是物理地址。</p>
+<h2 id="映射过程"><a href="#映射过程" class="headerlink" title="映射过程"></a>映射过程</h2><p>当进程引用一个逻辑地址时，需完成逻辑地址到物理地址的转换：<br><code>逻辑地址</code>–(分段)–&gt;<code>线性地址</code>–(分页)–&gt;<code>物理地址</code></p>
+<h3 id="逻辑地址-分段-gt-线性地址"><a href="#逻辑地址-分段-gt-线性地址" class="headerlink" title="逻辑地址-(分段)-&gt;线性地址"></a>逻辑地址-(分段)-&gt;线性地址</h3><img src="/2015/02/02/linux-address-mapping/fenduan.jpg" title="逻辑地址转换为线性地址"> 
+<p>逻辑地址有两部分：段选择符(16bit)+offset(32bit)  </p>
+<p>段描述符：每个段由一个8字节的段描述符(Segment Descriptor)表示，存放着段首地址、段长度、特权级等信息。  </p>
+<p>GDT和LDT：全局描述符表GDT，局部描述符表LDT。存放段描述符。  </p>
+<p>gdtr和ldtr：寄存器。存放GDT和LDT在内存中的地址。  </p>
+<p><strong>转换过程</strong>：</p>
+<ol>
+<li>段选择符的TI字段，确定是选gdtr或者ldtr，这就确定了段描述符表的基地址;</li>
+<li>段选择符的index字段，来计算段描述符的地址，即index字段的值乘以8，并将这个结果与GDTR或LDTR寄存器中的内容相加，得到了对应的段描述符表。</li>
+<li>offset与段描述符表的Base值相加，得到线性地址。</li>
+</ol>
+<p><strong>对于Linux</strong>：它只有4个段，而且对应段描述符的Base值均为0.所以offset+base=offset.<br>得出结论：Linux下，逻辑地址等于线性地址。  </p>
+<h3 id="线性地址-分页-gt-物理地址"><a href="#线性地址-分页-gt-物理地址" class="headerlink" title="线性地址-(分页)-&gt;物理地址"></a>线性地址-(分页)-&gt;物理地址</h3><img src="/2015/02/02/linux-address-mapping/Linear2PhysicalAddress.png" title="线性地址转为物理地址">
+<p>32位线性地址=10(页目录)+10(页表)+12(页内偏移)  </p>
+<p>cr3寄存器：存放正在使用的页目录物理地址。OS进程调度时，自动将当前进程页目录物理地址存入cr3寄存器。  </p>
+<p>页目录和页表都有1024项(2的10次方)。  </p>
+<p>缺页异常:如果页目录/页表里的preset标志为0，则将产生缺页异常。将从磁盘把相应页载入内存。  </p>
+<p><strong>对于Linux</strong>：分页过程差不多，只不过Linux使用了多级页目录而已。  </p>
+
+          
         
       
     </div>
@@ -744,8 +750,6 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
           
 
           
-              <div class="post-description">Linux内核的container_of宏</div>
-          
 
         </div>
       </header>
@@ -761,13 +765,10 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
 
       
         
-          
-          container_of 宏：123456struct demo_struct &#123;    type1 member1;    type2 member2;    type3 member3;    type4 member4; &#125;;
-同时，在另一个地方，获得了变量demo中的某一
-          ...
+          Linux内核的container_of宏
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/02/02/kernel-container-of.html#more" rel="contents">
+            <a class="btn" href="/2015/02/02/kernel-container-of.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -903,8 +904,6 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
           
 
           
-              <div class="post-description">Linux内核模块传递参数的方法。</div>
-          
 
         </div>
       </header>
@@ -920,14 +919,10 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
 
       
         
-          
-          在加载模块的时候，可以向模块传递参数值，供模块内部使用。   
-使用方法头文件:linux/moduleparam.h程序中:12int disk_size = 1024;module_param_named(size,disk_size,int,S_IRUGO);
-加载模块时:#insmod pa
-          ...
+          Linux内核模块传递参数的方法。
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/01/26/linux-module-param.html#more" rel="contents">
+            <a class="btn" href="/2015/01/26/linux-module-param.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1063,8 +1058,6 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
           
 
           
-              <div class="post-description">linux下的常见命令</div>
-          
 
         </div>
       </header>
@@ -1080,17 +1073,10 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
 
       
         
-          
-          压缩与打解包tar压缩、解压缩：bzip2、 gzip等打包、解包：tar 
-
-*.gz          gzip压缩的文件
-*.bz2         bzip2 压缩的文件
-*.tar         tar程序打包的文件，未经过压缩
-*.tar.gz      tar程序打包的文件，经过gz
-          ...
+          linux下的常见命令
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/01/24/linux-commands.html#more" rel="contents">
+            <a class="btn" href="/2015/01/24/linux-commands.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1242,15 +1228,17 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
       
         
           
-          零长度的数组一般见于结构体中。在Linux内核代码中比较常见。而直接声明零长度数组，例如char str[0];这是无法编译通过的。零长度的数组一般是放在结构体的最后一个成员的位置处，放在中间也是可以的。123456789101112131415161718192021222324252627282
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/01/23/c-flexible-array.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <p>零长度的数组一般见于结构体中。在Linux内核代码中比较常见。<br>而直接声明零长度数组，例如<code>char str[0];</code>这是无法编译通过的。<br>零长度的数组一般是放在结构体的最后一个成员的位置处，放在中间也是可以的。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">str1</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">int</span> b;</span><br><span class="line">    <span class="keyword">char</span> s[<span class="number">0</span>];</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">str2</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> len;</span><br><span class="line">    <span class="keyword">char</span> s[<span class="number">0</span>];</span><br><span class="line">    <span class="keyword">int</span> b;</span><br><span class="line">&#125;;</span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">str1</span> *<span class="title">sp</span>=<span class="title">NULL</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">str2</span> *<span class="title">sp2</span>=<span class="title">NULL</span>;</span></span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"Before,sizeof str1:%d\n"</span>,<span class="keyword">sizeof</span>(struct str1));</span><br><span class="line">    sp=(struct str1 *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(struct str1)+<span class="number">10</span>);</span><br><span class="line">    sp-&gt;len=<span class="number">100</span>;</span><br><span class="line">    sp-&gt;b=<span class="number">50</span>;</span><br><span class="line">    <span class="built_in">strcpy</span>(&amp;sp-&gt;s[<span class="number">0</span>],<span class="string">"abc"</span>);</span><br><span class="line">    <span class="built_in">puts</span>(sp-&gt;s);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After,sizeof str1:%d\n"</span>,<span class="keyword">sizeof</span>(struct str1));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"len:%d\t%p\n"</span>,sp-&gt;len,&amp;sp-&gt;len);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"b:%d\t%p\n"</span>,sp-&gt;b,&amp;sp-&gt;b);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"s:%s\t%p\n"</span>,sp-&gt;s,&amp;sp-&gt;s);</span><br><span class="line"> </span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"\nBefore,sizeof str2:%d\n"</span>,<span class="keyword">sizeof</span>(struct str2));</span><br><span class="line">    sp2=(struct str2 *)<span class="built_in">malloc</span>(<span class="keyword">sizeof</span>(struct str2)+<span class="number">10</span>);</span><br><span class="line">    sp2-&gt;len=<span class="number">150</span>;</span><br><span class="line">    sp2-&gt;b=<span class="number">60</span>;</span><br><span class="line">    <span class="built_in">strcpy</span>(&amp;sp2-&gt;s[<span class="number">0</span>],<span class="string">"def"</span>);</span><br><span class="line">    <span class="built_in">puts</span>(sp2-&gt;s);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"After,sizeof str2:%d\n"</span>,<span class="keyword">sizeof</span>(struct str2));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"len:%d\t\t%p\n"</span>,sp2-&gt;len,&amp;sp2-&gt;len);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"b:%d\t%p\n"</span>,sp2-&gt;b,&amp;sp2-&gt;b);</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"s:%s\t\t%p\n"</span>,sp2-&gt;s,&amp;sp2-&gt;s);</span><br><span class="line"> </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里的<code>char s[0]</code>指的是一个变长数组，有点类似指针，不过跟指针却有<strong>本质的区别</strong>：    </p>
+<ul>
+<li>该结构体分配内存空间时，在栈上一次性分配，是连续的。而且成员s不占结构体空间。</li>
+<li>如果使用指针形式，改成<code>char *ptr</code>,则结构体分配时,ptr需要占结构体一个指针大小。结构体本身需要一次栈上分配，指针ptr所指内存需要一次堆内分配。需要2次。而且这样内存就不连续了。   </li>
+</ul>
+<p>结构体的大小，测试发现是8，即sizeof(int)+sizeof(int)，也就是说s指向的空间不属于结构体str,这块空间紧跟着结构体str1所代表的空间。因此对于一个<code>struct str1 *</code>型的指针变量申请内存有如下方法：<br><code>sp=(struct str *)malloc(sizeof(struct str)+ 10);</code><br>表示给s申请了10个字节的空间。   </p>
+<p>上面分析的是结构体str1，对于结构体str2，把s[0]放在了中间，因为它不占存储空间，则s和b的地址是一样的。所以对s 赋值，会将b的原值覆盖掉。   </p>
+<p>程序运行结果如下图：<br><img src="/2015/01/23/c-flexible-array/flexible_array.png" title="运行结果图"></p>
+
+          
         
       
     </div>
@@ -1398,18 +1386,21 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
       
         
           
-          C语言的typedef是一个存储类声明说明符。是编译过程的一部分，但是并不分配存储空间。    
-typedef的作用定义一个标识符及关键字的别名。    
-typedef的用法
-1.定义一般的别名例子一：typedef int * pint; 定义pint为int指针别名。则若定义:pint pa
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/01/22/c-typedef-define.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="C语言的typedef"><a href="#C语言的typedef" class="headerlink" title="C语言的typedef"></a>C语言的typedef</h2><p>是一个存储类声明说明符。是编译过程的一部分，但是并不分配存储空间。    </p>
+<h3 id="typedef的作用"><a href="#typedef的作用" class="headerlink" title="typedef的作用"></a>typedef的作用</h3><p>定义一个标识符及关键字的别名。    </p>
+<h3 id="typedef的用法"><a href="#typedef的用法" class="headerlink" title="typedef的用法"></a>typedef的用法</h3><ul>
+<li>1.定义一般的别名<br>例子一：<code>typedef int * pint;</code> 定义pint为int指针别名。<br>则若定义:<code>pint pa,pb;</code> pa和pb都表示int型指针。<br>例子二：<code>typedef int A[10];</code> 定义A表示一个含10个整型的数组。<br>则若定义 <code>A number;</code> number表示含10整型元素的数组，等同于<code>int number[10];</code></li>
+<li>2.用于struct结构体别名<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">typedef struct node&#123;</span><br><span class="line">    int data;</span><br><span class="line">    struct node *next;</span><br><span class="line">&#125;NODE;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>则<code>NODE node_a;</code>等同于<code>struct node node_a;</code>显得方便。</p>
+<ul>
+<li>3.typedef来定义与平台无关的类型<br>假设要定义一个8字节的长整型LONGLONG：<br>Linux下:<code>typedef long long LONGLONG;</code><br>Windows下:<code>typedef uint_64   LONGLONG;</code><br>这样不同的平台下，使用LONGLONG均没问题，修改typedef即可。  </li>
+<li>4.定义别名，简化复杂声明<br>原声明:<code>int *(*a[5])(int, char*);</code><br>定义别名: <code>typedef int *(*pfunc)(int,char *);</code><br>之后，使用<code>pfunc a[5]</code>声明a即可。     </li>
+</ul>
+<h2 id="typedef与define的区别"><a href="#typedef与define的区别" class="headerlink" title="typedef与define的区别"></a>typedef与define的区别</h2><p>typedef发生在编译中，是和<code>int a=5</code>这样类似的声明；<br>define发生在预编译中，只是简单的字面上替换。<br>举例说明：<br><code>typedef int * pint;</code> 声明pint为int *数据类型；<br><code>#define pint2 int *;</code> 简单将两者替换。<br><code>pint a,b;</code>则a和b都为整型指针,<code>int *a</code>和<code>int *b</code>；<br><code>pint2 a,b;</code>则会替换成 <code>int *a,b;</code>这样a是指针，b不是指针。  </p>
+
+          
         
       
     </div>
@@ -1557,17 +1548,23 @@ typedef的用法
       
         
           
-          一、字节对齐的作用作用：便于cpu快速访问，同时合理的利用字节对齐可以有效地节省存储空间。 
-对于32位机来说，CPU一次能读取32位，则4字节对齐能够使cpu访问速度提高。  
-比如说一个long类型的变量，如果跨越了4字节边界存储，那么cpu要读取两次，这样效率就低了。但是在32位机中使用1字节
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/01/21/c-byte-align.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="一、字节对齐的作用"><a href="#一、字节对齐的作用" class="headerlink" title="一、字节对齐的作用"></a>一、字节对齐的作用</h2><p>作用：便于cpu快速访问，同时合理的利用字节对齐可以有效地节省存储空间。 </p>
+<p>对于32位机来说，CPU一次能读取32位，则4字节对齐能够使cpu访问速度提高。  </p>
+<p>比如说一个long类型的变量，如果跨越了4字节边界存储，那么cpu要读取两次，这样效率就低了。但是在32位机中使用1字节或者2字节对齐，反而会使变量访问速度降低。</p>
+<h2 id="二、字节对齐的原则"><a href="#二、字节对齐的原则" class="headerlink" title="二、字节对齐的原则"></a>二、字节对齐的原则</h2><p>编译器结合当前的操作系统，确定字节对齐方式。所以和编译器、操作系统都有关。    </p>
+<p>目前对齐原则：</p>
+<ul>
+<li>X86_32位机：<br>windows下：K字节大小的对象，起始地址要为K的整数倍。(用GCC和VC 6.0编译器测试)<br>Linux下：除了2字节的类型按2的整数倍对齐，都默认4字节对齐。(GCC 编译器测试)</li>
+<li>X86_64 机器：<br>Linux和windows：K字节大小的对象，起始地址要为K的整数倍。(查资料获得)</li>
+</ul>
+<h2 id="三、代码测试"><a href="#三、代码测试" class="headerlink" title="三、代码测试"></a>三、代码测试</h2><p><strong>测试环境:</strong> x86 32位的Linux 和windows。编译器都使用GNU GCC.<br><strong>测试代码:</strong><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> num1;</span><br><span class="line">    <span class="keyword">int</span> num2;</span><br><span class="line">    <span class="keyword">double</span> num3;</span><br><span class="line">&#125;A;</span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    <span class="keyword">int</span> num1;</span><br><span class="line">    <span class="keyword">double</span> num2;</span><br><span class="line">    <span class="keyword">int</span> num3;</span><br><span class="line">&#125;B;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"char:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">char</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"short:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">short</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"int:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"long:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">long</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"float:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">float</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"double:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">double</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"long long:%d\n"</span>,<span class="keyword">sizeof</span>(<span class="keyword">long</span> <span class="keyword">long</span>));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"sizeof(A):%d\n"</span>,<span class="keyword">sizeof</span>(A));</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">"sizeof(B):%d\n"</span>,<span class="keyword">sizeof</span>(B));</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>32位Linux下GCC的测试结果</strong><br>由于Linux下GCC默认4字节对齐，那么A、B结构体的存储方式分别如下图：<br><img src="/2015/01/21/c-byte-align/A_align.png" title="A结构体Linux对齐方式"><br><img src="/2015/01/21/c-byte-align/B_align_linux.png" title="B结构体Linux对齐方式"><br>程序的运行结果：<br><img src="/2015/01/21/c-byte-align/linux_align.png" title="Linux下运行结果">  </p>
+<p><br><br><strong>32位Windows 7 下GCC的测试结果：</strong><br>由于windows下的原则是：K字节的对象起始地址要是K的整数倍，那么:<br>A结构体的存储方式如下图所示,占16字节：<br><img src="/2015/01/21/c-byte-align/A_align.png" title="A结构体Win7对齐方式"></p>
+<p>B结构体的存储方式如下图所示,占24字节。因为num1占了4字节，num3长度为8(K=8),那么它的起始地址要为8的倍数，为了满足这个条件，所以在num1后面要留出4字节的空白。最后在num2之后，也要留4字节空白，使得结构体为24字节。这样如果分配连续的该结构体对象，才能满足下一个结构体的起始地址为24的整数倍。<br><img src="/2015/01/21/c-byte-align/B_align_win7.png" title="B结构体Win7对齐方式"><br>程序运行结果:<br><img src="/2015/01/21/c-byte-align/windows_align.png" title="Win7下运行结果"><br>补充用windows VC6.0编译测试，发现sizeof(B)也为24.(VC倒是不认识long long类型)  </p>
+<h2 id="四、修改字节对齐的方式"><a href="#四、修改字节对齐的方式" class="headerlink" title="四、修改字节对齐的方式"></a>四、修改字节对齐的方式</h2><p>使用伪指令<code>#pragma pack (n)</code>，C 编译器将按照n个字节对齐。<br>使用伪指令<code>#pragma pack ()</code>，恢复默认对齐方式。<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack(1)</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    <span class="keyword">char</span> num1;</span><br><span class="line">    <span class="keyword">int</span> num2;</span><br><span class="line">    <span class="keyword">char</span> num3;</span><br><span class="line">&#125;C;</span><br><span class="line"></span><br><span class="line"><span class="meta">#<span class="meta-keyword">pragma</span> pack()</span></span><br><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span>&#123;</span></span><br><span class="line">    <span class="keyword">char</span> num1;</span><br><span class="line">    <span class="keyword">int</span> num2;</span><br><span class="line">    <span class="keyword">char</span> num3;</span><br><span class="line">&#125;D;</span><br></pre></td></tr></table></figure></p>
+<p>C、D结构体内容相同，对齐方式不同：<br>C按照1字节对齐，则sizeof(C)=6;<br>D默认4字节对齐，则sizeof(D)=12.</p>
+
+          
         
       
     </div>
@@ -1715,16 +1712,14 @@ typedef的用法
       
         
           
-          指针指针是一种地址变量，而地址则是该变量的值。 指针是左值 。举例类比：int n=5; n是变量，5是值。指针类似于n, 地址类似于5.
-数组名是一个地址值，一个符号地址常量。 数组名是右值 。用来存放数组的区域是一块在栈中静态分配的内存(非static情况)，而数组名是这块内存的代表，它被定义为
-          ...
-          <!--noindex-->
-          <div class="post-button text-center">
-            <a class="btn" href="/2015/01/20/array-name-and-pointer.html#more" rel="contents">
-              阅读全文 &raquo;
-            </a>
-          </div>
-          <!--/noindex-->
+            <h2 id="指针"><a href="#指针" class="headerlink" title="指针"></a>指针</h2><p>指针是一种地址变量，而地址则是该变量的值。<strong> 指针是左值 </strong>。<br>举例类比：<code>int n=5;</code> n是变量，5是值。指针类似于n, 地址类似于5.</p>
+<h2 id="数组名"><a href="#数组名" class="headerlink" title="数组名"></a>数组名</h2><p>是一个地址值，一个符号地址常量。<strong> 数组名是右值 </strong>。<br>用来存放数组的区域是一块在栈中静态分配的内存(非static情况)，而数组名是这块内存的代表，它被定义为这块内存的首地址。数组名是地址常量。</p>
+<h2 id="两个疑问"><a href="#两个疑问" class="headerlink" title="两个疑问"></a>两个疑问</h2><p>1.作为形参的数组，不是会被转换为指针吗？<br>2.如果形参是一个指针，数组名可以作为实参传递给那个指针，难道不是说明了数组名是一个指针吗？   </p>
+<p>首先，C语言之所以把作为形参的数组看作指针，并非因为数组名可以转换为指针，而是因为当初ANSI委员会制定标准的时候，从C程序的执行效率出发，不主张参数传递时复制整个数组，而是传递数组的首地址，由被调函数根据这个首地址处理数组中的内容。那么谁能承担这种“转换”呢？这个主体必须具有地址数据类型，同时应该是一个变量，满足这两个条件的，非指针莫属了。要注意的是，这种“转换”只是一种逻辑看法上的转换，实际当中并没有发生这个过程，没有任何数组实体被转换为指针实体。    </p>
+<p>第二，函数参数传递的过程，本质上是一种赋值过程。C89对函数调用是这样规定的：函数调用由一个后缀表达式(称为函数标志符, function designator) 后跟由圆括号括起来的赋值表达式列表组成，在调用函数之前，函数的每个实际参数将被复制，所有的实际参数严格地按值传递。因此，形参实际上所期望得到的东西，并不是实参本身，而是实参的值或者实参所代表的值！举个例来说，对于一个函数声明：<br><code>void fun(int i);</code><br>我们可以用一个整数变量int n作实参来调用fun，就是fun(n)；当然，也正如大家所熟悉的那样，可以用一个整数常量例如10来做实参，就是fun(10) ,实际上，对于形参i来说，用来声明i的类型说明符int，所起的作用是用来说明需要传递给i一个整数，并非要求实参也是一个整数变量，i真正所期望的，只是一个整数，仅此而已，至于实参是什么，跟i没有任何关系，它才不管呢，只要能正确给i传递一个整数就OK了。当形参是指针的时候，所发生的事情跟这个是相同的。指针形参并没有要求实参也是一个指针，它需要的是一个地址，谁能给予它一个地址？显然指针、地址常量和符号地址常量都能满足这个要求，而数组名作为符号地址常量正是指针形参所需要的地址，这个过程就跟把一个整数赋值给一个整数变量一样简单！</p>
+<p>PS:部分参考出处未知的网络文章，侵删。</p>
+
+          
         
       
     </div>
@@ -1856,8 +1851,6 @@ typedef的用法
           
 
           
-              <div class="post-description">文章描述了C语言中指针的一些复杂指针的声明使用方式。</div>
-          
 
         </div>
       </header>
@@ -1873,19 +1866,10 @@ typedef的用法
 
       
         
-          
-          C语言复杂声明解读顺序
- 和 ()    
-*    
-char int 等
-
-10个解读示例1.float (*p)[2]p是一个指针，指向含有2个float元素的数组。    
-2.char *p[5]p是一个数组，数组含有5个字符类型的指针。
-3.char (*fp)(char *,int *
-          ...
+          文章描述了C语言中指针的一些复杂指针的声明使用方式。
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/14/c-pointer-complex-declaration.html#more" rel="contents">
+            <a class="btn" href="/2014/07/14/c-pointer-complex-declaration.html">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2321,13 +2305,6 @@ char int 等
 
   
   
-
-
-  <script type="text/javascript" src="/js/src/affix.js?v=6.3.0"></script>
-
-  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.3.0"></script>
-
-
 
   
 
