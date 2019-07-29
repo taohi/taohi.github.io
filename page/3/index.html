@@ -744,6 +744,8 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
           
 
           
+              <div class="post-description">Linux内核的container_of宏</div>
+          
 
         </div>
       </header>
@@ -759,10 +761,13 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
 
       
         
-          Linux内核的container_of宏
+          
+          container_of 宏：123456struct demo_struct &#123;    type1 member1;    type2 member2;    type3 member3;    type4 member4; &#125;;
+同时，在另一个地方，获得了变量demo中的某一
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/02/02/kernel-container-of.html">
+            <a class="btn" href="/2015/02/02/kernel-container-of.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -898,6 +903,8 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
           
 
           
+              <div class="post-description">Linux内核模块传递参数的方法。</div>
+          
 
         </div>
       </header>
@@ -913,10 +920,14 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
 
       
         
-          Linux内核模块传递参数的方法。
+          
+          在加载模块的时候，可以向模块传递参数值，供模块内部使用。   
+使用方法头文件:linux/moduleparam.h程序中:12int disk_size = 1024;module_param_named(size,disk_size,int,S_IRUGO);
+加载模块时:#insmod pa
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/01/26/linux-module-param.html">
+            <a class="btn" href="/2015/01/26/linux-module-param.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1052,6 +1063,8 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
           
 
           
+              <div class="post-description">linux下的常见命令</div>
+          
 
         </div>
       </header>
@@ -1067,10 +1080,17 @@ Linux继承了Unix和System V的进程间通信方式。Linux支持的主要进�
 
       
         
-          linux下的常见命令
+          
+          压缩与打解包tar压缩、解压缩：bzip2、 gzip等打包、解包：tar 
+
+*.gz          gzip压缩的文件
+*.bz2         bzip2 压缩的文件
+*.tar         tar程序打包的文件，未经过压缩
+*.tar.gz      tar程序打包的文件，经过gz
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/01/24/linux-commands.html">
+            <a class="btn" href="/2015/01/24/linux-commands.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1836,6 +1856,8 @@ typedef的用法
           
 
           
+              <div class="post-description">文章描述了C语言中指针的一些复杂指针的声明使用方式。</div>
+          
 
         </div>
       </header>
@@ -1851,10 +1873,19 @@ typedef的用法
 
       
         
-          文章描述了C语言中指针的一些复杂指针的声明使用方式。
+          
+          C语言复杂声明解读顺序
+ 和 ()    
+*    
+char int 等
+
+10个解读示例1.float (*p)[2]p是一个指针，指向含有2个float元素的数组。    
+2.char *p[5]p是一个数组，数组含有5个字符类型的指针。
+3.char (*fp)(char *,int *
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/14/c-pointer-complex-declaration.html">
+            <a class="btn" href="/2014/07/14/c-pointer-complex-declaration.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2683,6 +2714,9 @@ typedef的用法
   
 
   
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=6.3.0"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=6.3.0"></script>
+
 
   
 

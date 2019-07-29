@@ -427,6 +427,8 @@
           
 
           
+              <div class="post-description">sizeof是一个编译时(compile time)一元运算符。用于计算任意一对象的长度。</div>
+          
 
         </div>
       </header>
@@ -442,10 +444,12 @@
 
       
         
-          sizeof是一个编译时(compile time)一元运算符。用于计算任意一对象的长度。
+          
+          sizeof说明sizeof是一个编译时(compile-time)一元运算符。用于计算任意一对象的长度。由于是编译时计算出对象的大小，因此在预编译#if等语句中不能使用。用法：sizeof 对象 或者 sizeof(类型名)运算结果：等于指定对象或者类型占用的存储字节数。所得结果类型为size_t
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/13/c-sizeof.html">
+            <a class="btn" href="/2014/07/13/c-sizeof.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -581,6 +585,8 @@
           
 
           
+              <div class="post-description">详细写了C语言里const和static的用法。</div>
+          
 
         </div>
       </header>
@@ -596,10 +602,15 @@
 
       
         
-          详细写了C语言里const和static的用法。
+          
+          存储类声明符static:
+局部static变量：作用域为局部函数内。函数被调用的过程中维持其值不变。已经初始化则存放在data段，未初始化则默认初始化为0，存放在bss段。
+全局static变量：作用域为本文件内。已经初始化则存放在data段，未初始化则默认初始化为0，存放在bss段。
+一个被声明
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/13/c-const-static.html">
+            <a class="btn" href="/2014/07/13/c-const-static.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -735,6 +746,8 @@
           
 
           
+              <div class="post-description">总结了一下C语言中的输入输出</div>
+          
 
         </div>
       </header>
@@ -750,10 +763,13 @@
 
       
         
-          总结了一下C语言中的输入输出
+          
+          这些输入输出函数接口，全都定义在stdio.h头文件中。下面是几个变量声明12345#define MAX 1024int n;char c;char *s;char str[512];
+scanf()原型:int scanf(char *format,...)返回值：成功读取的变量数目，失败返回0
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/12/c-input-output.html">
+            <a class="btn" href="/2014/07/12/c-input-output.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -889,6 +905,8 @@
           
 
           
+              <div class="post-description">文章介绍C语言在汇编级别的运行过程。帮助理解C函数的调用出栈入栈过程，以及理解递归不收敛时程序崩溃现象。</div>
+          
 
         </div>
       </header>
@@ -904,10 +922,14 @@
 
       
         
-          文章介绍C语言在汇编级别的运行过程。帮助理解C函数的调用出栈入栈过程，以及理解递归不收敛时程序崩溃现象。
+          
+          C语言程序的执行，函数调用过程，如果将代码从汇编级别来研究，看内存中的汇编程序怎么运行，将会对C程序的执行理解更加深入。  
+环境：Xubuntu GCC GDB
+C代码1234567891011int foo(int a,int b)&#123;    int c=a+b;    return c
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/12/c-in-disassemble-level.html">
+            <a class="btn" href="/2014/07/12/c-in-disassemble-level.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1043,6 +1065,8 @@
           
 
           
+              <div class="post-description">记录git的常用操作,以及常用到的git的基本原理。</div>
+          
 
         </div>
       </header>
@@ -1058,10 +1082,14 @@
 
       
         
-          记录git的常用操作,以及常用到的git的基本原理。
+          
+          git用来做代码版本管理非常合适和高效。
+安装git在ubuntu下获得git非常容易：sudo apt-get install git
+git的几个概念Workspace:工作区。编写代码的位置。Index(Staging Area):暂存区。使用add命令,将代码加入这个区。Local Repo
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/10/git-usage-notes.html">
+            <a class="btn" href="/2014/07/10/git-usage-notes.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1355,6 +1383,8 @@
           
 
           
+              <div class="post-description">本篇文章介绍了在Linux环境下，gcc编译器将一个c文件，经过4个步骤，逐步编译成为可执行文件的详细过程。</div>
+          
 
         </div>
       </header>
@@ -1370,10 +1400,13 @@
 
       
         
-          本篇文章介绍了在Linux环境下，gcc编译器将一个c文件，经过4个步骤，逐步编译成为可执行文件的详细过程。
+          
+          基本概念在linux系统上，从源文件到目标文件的转化是由编译器完成的。以hello.c程序的编译为例，如下:1tao@tao-R408P~$ gcc -o hello hello.c
+在这里，gcc编译器读取源文件hello.c，并把它翻译成一个可执行文件 hello。这个翻译过程可分为四个阶段逐步
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/08/gcc-work-flow.html">
+            <a class="btn" href="/2014/07/08/gcc-work-flow.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1672,6 +1705,8 @@ r 表示跑
           
 
           
+              <div class="post-description">排序的方法非常多，这篇博客进行总结。关键、常用的排序方法：快速排序，堆排序，递归归并排序，非递归归并排序等。</div>
+          
 
         </div>
       </header>
@@ -1687,10 +1722,20 @@ r 表示跑
 
       
         
-          排序的方法非常多，这篇博客进行总结。关键、常用的排序方法：快速排序，堆排序，递归归并排序，非递归归并排序等。
+          
+          排序的方法非常多，这篇博客进行总结。关键、常用的排序方法：
+
+快速排序，提高效率的方法
+堆排序
+递归归并排序
+非递归归并排序
+
+下面是这些排序的代码,C语言实现：
+12345678910111213141516171819202122232425262728293031323334353637383
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/08/sort-code-in-c.html">
+            <a class="btn" href="/2014/07/08/sort-code-in-c.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -1826,6 +1871,8 @@ r 表示跑
           
 
           
+              <div class="post-description">2014年暑假找实习时,遇到的一些笔试面试题目的记录。以便于以后参考。</div>
+          
 
         </div>
       </header>
@@ -1841,10 +1888,20 @@ r 表示跑
 
       
         
-          2014年暑假找实习时,遇到的一些笔试面试题目的记录。以便于以后参考。
+          
+          百度实习1面
+堆和栈的区别
+malloc的底层机制？
+进程和线程的区别
+进程之间有哪些通信方式
+如何创建共享内存？通过malloc吗？
+知道哪些排序算法？它们的稳定性和复杂度怎样？为什么快排的平均时间复杂度是O(nlgn)？
+算法题：两个字符串s1和s2，判断s2是否是s1的旋转字符串。
+问我有什么
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2014/07/08/interview-questions.html">
+            <a class="btn" href="/2014/07/08/interview-questions.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2673,6 +2730,9 @@ r 表示跑
   
 
   
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=6.3.0"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=6.3.0"></script>
+
 
   
 

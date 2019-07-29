@@ -1536,6 +1536,8 @@ IPC的ID与key键每一个IPC都用唯一的ID来标识、使用。一般利用k
           
 
           
+              <div class="post-description">信号是进程间唯一异步通信机制，是一种软中断。本文介绍Linux下信号处理方式。文章分6部分：一、信号基本工作原理；二、信号集结构体sigset_t；三、发送信号；四、安装信号；五、信号的屏蔽；六、等待信号。</div>
+          
 
         </div>
       </header>
@@ -1551,10 +1553,12 @@ IPC的ID与key键每一个IPC都用唯一的ID来标识、使用。一般利用k
 
       
         
-          信号是进程间唯一异步通信机制，是一种软中断。本文介绍Linux下信号处理方式。文章分6部分：一、信号基本工作原理；二、信号集结构体sigset_t；三、发送信号；四、安装信号；五、信号的屏蔽；六、等待信号。
+          
+          信号是进程间唯一异步通信机制，是一种软中断。头文件：signal.hLinux一共定义了32个非实时信号。编号0-31。常见的如下：1234567891011121314151617181920212223#define SIGNAL       0#define SIGHUP       1#de
+          ...
           <!--noindex-->
           <div class="post-button text-center">
-            <a class="btn" href="/2015/02/03/ipc-signal.html">
+            <a class="btn" href="/2015/02/03/ipc-signal.html#more" rel="contents">
               阅读全文 &raquo;
             </a>
           </div>
@@ -2699,6 +2703,9 @@ IPC的ID与key键每一个IPC都用唯一的ID来标识、使用。一般利用k
   
 
   
+  <script type="text/javascript" src="/js/src/js.cookie.js?v=6.3.0"></script>
+  <script type="text/javascript" src="/js/src/scroll-cookie.js?v=6.3.0"></script>
+
 
   
 
