@@ -1213,21 +1213,20 @@
       
         
           
-            <h2 id="C可执行程序的结构"><a href="#C可执行程序的结构" class="headerlink" title="C可执行程序的结构"></a>C可执行程序的结构</h2><p>C程序语言在编译和连接后，生成可执行程序，作为文件存放在磁盘上它的结构如下:  </p>
-<p>1.<strong>代码段<code>Text</code></strong><br>2.<strong>只读数据段<code>RO Data</code></strong><br>3.<strong>读写数据段<code>RW Data</code></strong>    </p>
-<p>其中RO Data和RW Data统称为初始化数据段<strong><code>initialized data</code></strong>。<br>在可执行程序<code>载入运行</code>时，会产生地址映射，以上三部分会对应到程序的虚拟地址空间。<br>除了以上三个区域外，还产生:</p>
-<p>4.<strong>未初始化数据段<code>BSS</code>区域</strong><br>5.<strong>堆<code>Heap</code>区域</strong><br>6.<strong>栈<code>Stack</code>区域</strong>   </p>
-<h2 id="各部分含义"><a href="#各部分含义" class="headerlink" title="各部分含义"></a>各部分含义</h2><h3 id="1-代码段-Code或Text"><a href="#1-代码段-Code或Text" class="headerlink" title="1.代码段(Code或Text)"></a>1.代码段(Code或Text)</h3><p>从0x08048000虚拟地址开始。代码段由程序中执行的机器代码组成。在C语言中，程序语句进行编译后，形成机器代码。在执行程序的过程中，CPU的程序计数器指向代码段的每一条机器代码，并由处理器依次运行。</p>
-<h3 id="2-只读数据段-RO-data"><a href="#2-只读数据段-RO-data" class="headerlink" title="2.只读数据段(RO data)"></a>2.只读数据段(RO data)</h3><p>存放const 常量，字符串常量等。使用这些数据的方式类似查表式操作，由于这些变量不需要更改，因此只需要放置在只读存储器中即可。</p>
-<h3 id="3-已初始化读写数据段-RW-data"><a href="#3-已初始化读写数据段-RW-data" class="headerlink" title="3.已初始化读写数据段(RW data)"></a>3.已初始化读写数据段(RW data)</h3><p>存放<strong><code>已初始化</code></strong>全局变量和static变量，这些变量需要占用存储空间，具有初值，供程序运行时读写。</p>
-<h3 id="4-未初始化数据段-BSS"><a href="#4-未初始化数据段-BSS" class="headerlink" title="4.未初始化数据段(BSS)"></a>4.未初始化数据段(BSS)</h3><p>存放<strong><code>未初始化</code></strong>全局变量和static变量。这些变量在程序运行之前，不占用存储空间。</p>
-<h3 id="5-堆-heap"><a href="#5-堆-heap" class="headerlink" title="5.堆(heap)"></a>5.堆(heap)</h3><p>堆内存只在程序运行时出现，一般由程序员分配和释放，比如<code>malloc</code>.在具有操作系统的情况下，如果程序没有释放，操作系统可能在程序(例如一个进程)结束后回收内存。</p>
-<h3 id="6-栈-stack"><a href="#6-栈-stack" class="headerlink" title="6.栈(stack)"></a>6.栈(stack)</h3><p>从<code>0xC0000000</code>开始往下低地址增长。栈内存只在程序运行时出现，在函数内部使用的变量、函数的参数以及返回值将使用栈空间，栈空间由编译器自动分配和释放。<br>栈大小在linux下可以使用<code>ulimit -s</code>查看，linux默认8M。可以修改，比如：用<code>ulimit -s 4096</code>指定为4M。如果程序用栈太大就出现栈溢出，程序出现段错误并退出。比如无限递归。</p>
-<h2 id="示例代码分析"><a href="#示例代码分析" class="headerlink" title="示例代码分析"></a>示例代码分析</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> ro[] = &#123;<span class="string">"this is read only data"</span>&#125;; <span class="comment">//只读数据区</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">char</span> rw_1[] =&#123;<span class="string">"this is global read write data"</span>&#125;; <span class="comment">//已初始化读写数据段</span></span><br><span class="line"><span class="keyword">char</span> BSS_1[ <span class="number">100</span>]; <span class="comment">//未初始化数据段</span></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">char</span> *ptrconst =<span class="string">"constant data"</span>; <span class="comment">//字符串放在只读取数据段</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">short</span> b; <span class="comment">//在栈上，占用2个字节</span></span><br><span class="line">    <span class="keyword">char</span> a[<span class="number">100</span>]; <span class="comment">//在栈上开辟100个字节， 它的值是其首地址</span></span><br><span class="line">    <span class="keyword">char</span> s[]=<span class="string">"abcdefg"</span>; <span class="comment">//s在栈上，占用4个字节，"abcdefg"本身放置在只读数据区，占8个字节</span></span><br><span class="line">    <span class="keyword">char</span> *p1; <span class="comment">//p1在栈上，占用4个字节</span></span><br><span class="line">    <span class="keyword">char</span> *p2=<span class="string">"123456"</span>; <span class="comment">//p2 在栈上，p2指向的内容不能改，“123456”在只读数据区</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> rw_2[]=&#123;<span class="string">"local read write data"</span>&#125;;<span class="comment">//已初始化读写数据段</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">char</span> BSS_2[<span class="number">100</span>]; <span class="comment">//未初始化数据段</span></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">int</span> c = <span class="number">0</span>; <span class="comment">//全局(静态)初始化区 </span></span><br><span class="line">    p1=(<span class="keyword">char</span> *)<span class="built_in">malloc</span>(<span class="number">10</span> * <span class="keyword">sizeof</span>(<span class="keyword">char</span>)); <span class="comment">//分配内存区域在堆区</span></span><br><span class="line">    <span class="built_in">strcpy</span>(p1,<span class="string">"xxxx"</span>); <span class="comment">//“XXXX”放在只读数据区，占5个字节</span></span><br><span class="line">    <span class="built_in">free</span>(p1); <span class="comment">//使用free释放p1所指向的内存</span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="内存布局图"><a href="#内存布局图" class="headerlink" title="内存布局图"></a>内存布局图</h2><img src="/2014/07/10/linux-c-memory-layout/memory.png" title="内存布局图(来自APUE)">  
-<img src="/2014/07/10/linux-c-memory-layout/LinuxProcLayout.png" title="内存布局图2(来自网络)"> 
-
-          
+          C可执行程序的结构C程序语言在编译和连接后，生成可执行程序，作为文件存放在磁盘上它的结构如下:  
+1.代码段Text2.只读数据段RO Data3.读写数据段RW Data    
+其中RO Data和RW Data统称为初始化数据段initialized data。在可执行程序载入运行时，会产生地址映射，以上三部分会对应到程序的虚拟地址空间。除了以上三个区域外，还产生:
+4.未初始化数据段BSS区域5.堆Heap区域6.栈Stack区域   
+各部分含义1.代码段(Code或Text)从0x08048000虚拟地址开始。代码段由程序中执行的机器代码组成。在C语言中，程序语句进行编译后，形成机器代码。在执行程序的过程中，CPU的程序计数器指向代码段的每一条机器代码，并由处理器依次运行。
+2
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2014/07/10/linux-c-memory-layout.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
@@ -1529,34 +1528,34 @@
       
         
           
-            <h2 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h2><ul>
-<li><code>gcc -g a.c -o a.out</code>，这样就可以调试a.out</li>
-<li><code>gdb a.out</code>开始调试a.out</li>
-<li><code>focus</code> 类似turbo C的界面，使得当前代码高亮实时显示。</li>
-<li><code>list 15</code> 从15行开始列出源码</li>
-<li><code>b foo()</code> 在foo()函数设置断点</li>
-<li><code>b 20</code> 在第20行设置断点</li>
-<li><code>r</code> 表示跑程序，run</li>
-<li><code>n</code> 表示next，单步执行</li>
-<li><code>display 变量</code>一直显示某变量的值</li>
-<li><code>p 变量</code> 打印一次某变量的值</li>
-<li><code>p *地址</code> 打印内存某地址里的内容</li>
-<li><code>info args</code> 查看参数信息</li>
-</ul>
-<h2 id="汇编相关"><a href="#汇编相关" class="headerlink" title="汇编相关"></a>汇编相关</h2><ul>
-<li><code>layout asm</code> 显示汇编代码</li>
-<li><code>start</code> 开始单步运行</li>
-<li><code>disassemble 函数名</code> 显示某函数的汇编代码</li>
-<li><code>disassemble /m</code> 显示当前函数汇编代码</li>
-<li><code>si 表示step into</code>，按汇编语句单步执行，深入被调函数</li>
-<li><code>ni 表示step over</code>，也是单步执行；</li>
-<li><code>info registers</code> 查看所有寄存器的值</li>
-<li><code>display $eax</code>这样查看寄存器值</li>
-<li><code>info frame</code> 查看当前栈的概览信息</li>
-<li><code>x/10x $sp</code>按照16进制打印当前栈的前10个元素</li>
-</ul>
+          常用命令
+gcc -g a.c -o a.out，这样就可以调试a.out
+gdb a.out开始调试a.out
+focus 类似turbo C的界面，使得当前代码高亮实时显示。
+list 15 从15行开始列出源码
+b foo() 在foo()函数设置断点
+b 20 在第20行设置断点
+r 表示跑程序，run
+n 表示next，单步执行
+display 变量一直显示某变量的值
+p 变量 打印一次某变量的值
+p *地址 打印内存某地址里的内容
+info args 查看参数信息
 
-          
+汇编相关
+layout asm 显示汇编代码
+start 开始单步运行
+disassemble 函数名 显示某函数的汇编代码
+disassemble /m 显示当前函数汇编代码
+si 表示step into，按汇编语
+          ...
+          <!--noindex-->
+          <div class="post-button text-center">
+            <a class="btn" href="/2014/07/08/gdb-debug-md.html#more" rel="contents">
+              阅读全文 &raquo;
+            </a>
+          </div>
+          <!--/noindex-->
         
       
     </div>
