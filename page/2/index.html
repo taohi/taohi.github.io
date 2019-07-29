@@ -449,16 +449,7 @@
 制作答辩PPT。
 参加答辩。
 填写档案袋以及(共6种资料)签字盖章。
-根据答辩，重新修改完善论文，最终定稿。和档案袋一起上交。  
-在研究生院学位信息录入系统录入学位信息。  
-
-三方办理流程
-找工作，与公司签两方工作意向协议。这个用于让自己放心。  
-拿到学校发的三方协议，自己签字，然后给公司盖章。  
-公司寄回三方协议，在学校就业网站填好毕业去向登记。三方找学院盖章。
-将三方找学校就业办盖章。给一份就业办，给一份学院，自己留一份，给一份公司。
-
-三方毁约流程因为和腾讯毁约。经历了三方毁约。发生在第一次给公司寄出三
+根据答辩，重新修改完善论文，最终定稿。和档案袋一起上
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -616,12 +607,7 @@
           
           本文Linux虚拟文件系统的几个重要对象。它们在Linux编程中比较重要。在进程编程等场景经常用到。
 file对象file对象是在进程观点上，进程中打开的文件的表示。  
-dentry对象它表示一个实际的文件。不同进程打开同一个文件时，它们有不同的file对象，但是最终指向同一个dentry对象。  
-inode对象linux将文件与文件的属性分开表示。inode对象包含了一个文件相关的所有属性信息。比如文件大小，文件权限，操作方法集，对应的块设备，修改时间等。  
-super_block对象超级块对象。它包含磁盘上文件的一些元数据。是对文件系统具体的描述。  
-如下两张图，能够将这些对象的关系看得很清楚。
-
-文件描述符从上图知道，在进程中打开的文件，对应的文件描述符，就是file_stru
+dentry对象它表示一个实际的文件。不同进程打开同一个文件时，它们有不同的file对象，但是最终指向同一个dentry对象。 
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -778,9 +764,7 @@ super_block对象超级块对象。它包含磁盘上文件的一些元数据。
         
           
           malloc是C库函数。用于分配堆内存。是在运行时分配存储空间的函数。头文件: stdlib.h函数原型：void *malloc(unsigned int num_bytes);  
-C库函数malloc1.组织结构空闲存储空间以空闲链表的方式组织，每个块包含一个长度，一个指向下一块的指针，以及一个指向自身存储空间的指针。按照存储地址升序组织。最后一块指向第一块。 
-2.分配过程有申请时，malloc顺序扫描空闲链表。直到找到一个足够大的块。算法为“首次适应”。寻找过程中，如果块大小等于需求大小，直接返回；如果块大小太大，分成两部分，一块为需求大小，将它返回(一般是块的后半部分)，另一块留在链表中；如果找不到足够大的块。调用sbrk向操作系统申请更大块加入空闲链表。
-3.释放过程free首
+C库函数malloc1.组织结构空闲存储空间以空闲链表的方式组织，每个块包含一个长度，一个指向下一块的指针，以及一
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -938,9 +922,7 @@ C库函数malloc1.组织结构空闲存储空间以空闲链表的方式组织�
           
           前提概念HZ：节拍率.linux一秒钟中断的次数，一般是100jiffies：系统从启动到当前的节拍数。如果系统启动n秒了，则 jiffies = n*HZ  
 头文件：linux/timer.h
-12345678struct timer_list&#123;       struct list_head entry;        unsigned long expires;        struct tvec_base *base;        void (*function) (unsigned long);        unsigned long data;        .......&#125;
-使用步骤
-申请timer_list结构体 struct timer_list 
+12345678struct timer_list&#123;       struct list_h
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1098,14 +1080,7 @@ C库函数malloc1.组织结构空闲存储空间以空闲链表的方式组织�
           
           一.Linux线程与进程的对比用户空间角度：
 新进程创建时，申请独立的地址空间，包括堆、栈、代码段、数据段、BSS段等。并初始化为父进程的值。此后父子进程不能直接互相访问这些资源。
-新线程创建时，只申请独立线程栈，与同进程的其它线程共享进程地址空间，包括的代码段、数据段、BSS段、堆、打开的库、mmap映射的文件、共享内存空间。  
-
-内核空间角度：
-Linux并不区分进程和线程。创建线程和进程时，都会创建新的PCB。
-不同的是，新进程PCB的mm_struct会创建新地址空间；新线程PCB的mm_struct指向主进程的地址空间，与它共享。  
-
-总的说来进程是OS管理资源的基本单元；线程是Linux系统调度的基本单元。
-二.线程基本操作头文件：pthread.h由于是POSIX线程库，g
+新线程创建时，只申请独立线程栈，与同进程的其它线程共享进程地址空间，包括的代码段、数据段、BSS段、堆、打开的库、mm
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1264,7 +1239,7 @@ Linux并不区分进程和线程。创建线程和进程时，都会创建新的
           共享内存允许两个进程共享一个给定的存储区。所以数据不需要在两个进程间复制。这是最快的一种IPC。头文件:sys/shm.h
 一.共享内存示意图↓  
 二.地址映射示意图↓(APUE)  
-三.共享内存的数据结构shmid_ds1234567891011struct shmid_ds &#123;struct ipc_perm shm_perm; /* see Section 15.6.2 */size_t shm_segsz; /* size of segment in bytes */pid_t shm_lpid; /* pid of last shmop() */pid_t shm_cpid; /* pid of creator */shmatt_t shm_nattch; /* num
+三.共享内存的数据结构shmid_ds1234567891011struct shmid_ds &#123;st
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1421,9 +1396,7 @@ Linux并不区分进程和线程。创建线程和进程时，都会创建新的
         
           
           System V提供的IPC机制有三种：信号量、消息队列、共享内存。本文介绍前两种。头文件:sys/msg.h 和 sys/ipc.h使用ipcs可以查看系统正使用的IPC工具：  
-IPC的ID与key键每一个IPC都用唯一的ID来标识、使用。一般利用key键来获得一个IPC的ID。而key可以通过ftok()产生。key_t ftok(char *pathname,int id);
-IPC权限结构ipc_perm12345678struct ipc_perm&#123;    uid_t uid;    gid_t gid;    uid_t cuid;    gid_t cgid;    mode_t mode;    ......&#125;;
-进程通信之五：消息队列通信123456
+IPC的ID与key键每一个IPC都用唯一的ID来标识、使用。一般利用key键来获得一个IPC的ID。而key可以通
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1734,14 +1707,7 @@ IPC权限结构ipc_perm12345678struct ipc_perm&#123;    uid_t uid;    gid_t gid;
         
           
           有名管道FIFO是一个特殊文件。但并不是将信息真正存到磁盘，而是存到内存中。两个完全没有关联的进程，通过访问这个管道文件，实现进程间通信。
-头文件#include &lt;sys/types.h&gt;#include&lt;sys/stat.h&gt;int mkfifo(const char *pathname, mode_t mode);
-使用方式
-创建一个FIFO文件：mkfifo(“/tmp/fifo”,0766)。
-A进程以写方式打开FIFO文件：open(FIFO文件,O_WRONLY),调用write往里写数据。
-B进程以读方式打开FIFO文件：open(FIFO文件,O_RDONLY),调用read读出数据。
-
-阻塞现象
-A进程以写(读)方式打开FIFO，将会阻塞在open
+头文件#include &lt;sys/types.h&gt;#include&lt;sys/stat.h&gt;int mkfifo(const char *
           ...
           <!--noindex-->
           <div class="post-button text-center">
@@ -1900,11 +1866,7 @@ A进程以写(读)方式打开FIFO，将会阻塞在open
           基本概念无名管道是一种特殊类型文件。内核资源对应一段特殊内存。管道的数据流是单向的。  
 命令ulimit -p 查看管道最大值限制，默认为8*512Byte=4KB。由limit.h的宏PIPE_BUF定义。  
 头文件：#include &lt;unistd.h&gt;  
-原型：int pipe(int pipefd[2]);
-若执行成功，pipefd内将存储两个文件描述符，指向管道的两端(pipefd[0]读,pipefd[1]写);若执行失败，返回值为-1。  
-读写管道用系统调用read和write，默认以阻塞方式读写。  
-工作原理  
-示例代码实现管道操作ls /home/tao|sort12345678910111213141516171819202122232425262
+原型：int pip
           ...
           <!--noindex-->
           <div class="post-button text-center">
